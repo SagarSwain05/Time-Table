@@ -68,11 +68,33 @@
 .roadmap-link:hover{background:#E0E7FF;transform:translateY(-1px)}
 .reminder-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:7px 9px;border-radius:999px;background:#ECFDF5;color:#065F46;border:0.5px solid #A7F3D0;box-shadow:0 4px 12px rgba(16,185,129,.07)}
 .reminder-empty{font-size:11px;color:var(--color-text-secondary)}
+.calendar-fab{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.calendar-btn{width:48px;height:48px;border-radius:50%;border:0.5px solid rgba(83,74,183,.18);background:linear-gradient(135deg,#534AB7,#6B63D9);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 16px 28px rgba(83,74,183,.24)}
+.calendar-btn:hover{transform:translateY(-1px)}
+.calendar-input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.calendar-badge{max-width:220px;padding:8px 10px;border-radius:14px;border:0.5px solid rgba(148,163,184,.18);background:rgba(255,255,255,.96);box-shadow:0 12px 28px rgba(15,23,42,.08);font-size:11px;color:var(--color-text-secondary)}
+.catchup-banner{margin-bottom:.8rem;padding:10px 12px;border-radius:16px;border:0.5px solid rgba(245,158,11,.25);background:linear-gradient(180deg,rgba(255,251,235,.96),rgba(255,247,237,.96));color:#92400E;box-shadow:0 8px 20px rgba(245,158,11,.08)}
+.catchup-banner strong{font-weight:700;color:#78350F}
 @media (max-width: 720px){
   .wrap{padding:.65rem}
   .assistant-grid{grid-template-columns:1fr}
   .topbar,.assistant-panel,.assistant-card{border-radius:16px}
   .stat{min-width:calc(50% - 4px)}
+  .calendar-fab{right:10px;top:auto;bottom:12px;transform:none}
+  .calendar-badge{max-width:180px}
+  .nav-row{align-items:stretch}
+  .week-label{flex-basis:100%;order:3;text-align:left;padding-top:2px}
+  .phase-badge{order:2}
+  .nav-btn{flex:1}
+}
+@media (max-width: 480px){
+  .title-area h2{font-size:16px}
+  .title-area p{font-size:11px}
+  .stat{min-width:100%}
+  .slot-header{align-items:flex-start}
+  .time-badge{min-width:72px}
+  .assistant-actions,.assistant-key-row{flex-direction:column}
+  .assistant-btn,.assistant-key{width:100%}
 }
 </style>
 
@@ -105,6 +127,7 @@
 
 <div class="day-tabs" id="dayTabs"></div>
 <div class="focus-bar" id="focusBar"></div>
+<div id="catchupBanner" class="catchup-banner" style="display:none"></div>
 <div class="schedule" id="schedule"></div>
 
 <div class="assistant-panel">
@@ -144,6 +167,14 @@
     </div>
   </div>
 </div>
+
+  <div class="calendar-fab" aria-label="Jump to any date">
+    <button class="calendar-btn" type="button" onclick="openCalendarJump()" title="Jump to date">
+      <i class="ti ti-calendar-event" style="font-size:20px" aria-hidden="true"></i>
+    </button>
+    <input id="dateJumpInput" class="calendar-input" type="date" aria-label="Jump to date picker" onchange="jumpToPickedDate()">
+    <div id="calendarBadge" class="calendar-badge">Pick any date to jump directly to that study day and see the tasks for it.</div>
+  </div>
 </div>
 
 <script>
@@ -159,6 +190,92 @@ const DAY_NAMES=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const DAY_FULL=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 function dateStr(d){return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short"});}
+function toISODateLocal(d){
+  const year=d.getFullYear();
+  const month=String(d.getMonth()+1).padStart(2,'0');
+  const day=String(d.getDate()).padStart(2,'0');
+  return `${year}-${month}-${day}`;
+}
+function fromISODateLocal(value){
+  if(!value) return null;
+  const [year,month,day]=value.split('-').map(Number);
+  if(!year || !month || !day) return null;
+  return new Date(year,month-1,day);
+}
+function sameDay(a,b){
+  return a && b && a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+}
+function getCurrentDateForSelection(){
+  return getWeekDates(currentWeek)[currentDay] || new Date();
+}
+function isDateInPlan(d){
+  const start=new Date(START);
+  const end=new Date(START);
+  end.setDate(end.getDate()+WEEKS.length*7);
+  return d>=start && d<end;
+}
+function jumpToDate(targetDate){
+  if(!targetDate || !isDateInPlan(targetDate)) return false;
+  for(let wi=0;wi<WEEKS.length;wi++){
+    const dates=getWeekDates(wi);
+    for(let di=0;di<7;di++){
+      if(sameDay(dates[di],targetDate)){
+        currentWeek=wi;
+        currentDay=di;
+        openSlot=null;
+        renderDayTabs();
+        renderSchedule();
+        renderStats();
+        document.getElementById('prevWeek').disabled=currentWeek===0;
+        document.getElementById('nextWeek').disabled=currentWeek===WEEKS.length-1;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+function openCalendarJump(){
+  const input=document.getElementById('dateJumpInput');
+  if(!input) return;
+  input.value=toISODateLocal(getCurrentDateForSelection());
+  if(typeof input.showPicker==='function') input.showPicker();
+  else input.click();
+}
+function jumpToPickedDate(){
+  const input=document.getElementById('dateJumpInput');
+  const picked=fromISODateLocal(input?.value || '');
+  if(!picked) return;
+  const badge=document.getElementById('calendarBadge');
+  const ok=jumpToDate(picked);
+  if(badge){
+    badge.textContent=ok ? `Jumped to ${dateStr(picked)}. Review the day and catch up on anything pending.` : `That date is outside the 3-month plan. Choose a date from ${dateStr(START)} onward.`;
+  }
+}
+function getBacklogItems(referenceDate){
+  const cutoff=referenceDate ? new Date(referenceDate.getFullYear(),referenceDate.getMonth(),referenceDate.getDate()) : new Date();
+  const items=[];
+  for(let wi=0;wi<WEEKS.length;wi++){
+    const dates=getWeekDates(wi);
+    for(let di=0;di<7;di++){
+      const slotDate=dates[di];
+      if(slotDate>=cutoff) continue;
+      WEEKS[wi].days[di].slots.forEach((slot,si)=>{
+        const total=slot.topics.length;
+        const done=slot.topics.filter((_,ti)=>stored[topicKey(wi,di,si,ti)]).length;
+        if(done<total){
+          const missing=slot.topics.filter((_,ti)=>!stored[topicKey(wi,di,si,ti)]).slice(0,3);
+          items.push({
+            date:slotDate,
+            title:`${DAY_FULL[di]} · ${slot.time} ${slot.title}`,
+            missing,
+            remaining:total-done
+          });
+        }
+      });
+    }
+  }
+  return items;
+}
 
 const START = new Date(2026,5,7);
 
@@ -750,9 +867,11 @@ function renderTodayReminders(){
   const target=document.getElementById('todayReminders');
   if(!target) return;
   const day=getCurrentDayEntry();
+  const backlog=getBacklogItems(getCurrentDateForSelection());
   const lines=[
     `Wake up at 8:00 AM, then complete the 8–9 AM morning block.`,
     ...(day ? day.slots.slice(0,2).map(slot => `${slot.time} ${slot.title}`) : []),
+    ...(backlog.length ? [`Catch up on ${backlog.length} overdue block${backlog.length===1?'':'s'} before moving ahead.`] : []),
     ...customReminders.slice(0,4).map(item => item.text)
   ];
   target.innerHTML=lines.length ? lines.slice(0,6).map(text => `<div class="reminder-pill">${text}</div>`).join('') : '<div class="reminder-empty">No reminders yet. Add one from the assistant.</div>';
@@ -762,8 +881,11 @@ function renderAssistantSuggestions(){
   const target=document.getElementById('nextTasks');
   if(!target) return;
   const matches=getRoadmapMatches(getCurrentFocusText());
+  const backlog=getBacklogItems(getCurrentDateForSelection());
+  const backlogItems=backlog.slice(0,2).map(item => `${dateStr(item.date)}: ${item.title} (${item.remaining} topic${item.remaining===1?'':'s'} left)`);
   const suggestions=[
     `Finish ${getCurrentDayEntry()?.focus || "today's plan"} in sequence: morning → aptitude → dev → placement → DSA.`,
+    ...(backlogItems.length ? [`Catch-up queue: ${backlogItems.join(' · ')}`] : []),
     matches.length ? `Deep dive next: ${matches.map(item => item.label).join(', ')}.` : 'Use roadmap.sh to explore the next layer after the current slot is done.',
     'After a topic is complete, add 1 small project or 3 extra practice questions.'
   ];
@@ -1059,6 +1181,20 @@ function renderAssistantPanel(){
   renderAssistantOutput();
 }
 
+function renderCatchupBanner(){
+  const banner=document.getElementById('catchupBanner');
+  if(!banner) return;
+  const backlog=getBacklogItems(getCurrentDateForSelection());
+  if(!backlog.length){
+    banner.style.display='none';
+    banner.textContent='';
+    return;
+  }
+  const preview=backlog.slice(0,3).map(item => `${dateStr(item.date)} ${item.title}`).join(' · ');
+  banner.style.display='block';
+  banner.innerHTML=`<strong>Catch-up mode:</strong> ${backlog.length} overdue block${backlog.length===1?'':'s'} detected. Start with ${preview}${backlog.length>3 ? ' · more in backlog' : ''}.`;
+}
+
 function renderDayTabs(){
   const dates=getWeekDates(currentWeek);
   const row=document.getElementById('dayTabs');
@@ -1131,6 +1267,10 @@ function renderSchedule(){
     sch.appendChild(div);
   });
 
+  const calendarBadge=document.getElementById('calendarBadge');
+  if(calendarBadge) calendarBadge.textContent=`${dateStr(dt)} selected · jump anywhere with the calendar button`;
+
+  renderCatchupBanner();
   renderAssistantPanel();
 }
 
