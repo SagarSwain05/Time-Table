@@ -61,6 +61,9 @@
 .assistant-input{width:100%;min-height:86px;resize:vertical;padding:11px 12px;border-radius:14px;border:0.5px solid rgba(148,163,184,.24);background:rgba(255,255,255,.96);color:var(--color-text-primary);font:inherit;font-size:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.88)}
 .assistant-key-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .assistant-key{flex:1;min-width:180px;padding:8px 10px;border-radius:14px;border:0.5px solid rgba(148,163,184,.24);background:rgba(255,255,255,.96);color:var(--color-text-primary);font:inherit;font-size:12px}
+.assistant-extend{margin-top:8px;padding-top:8px;border-top:0.5px solid rgba(148,163,184,.14)}
+.assistant-extend-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.assistant-extend-input{flex:1;min-width:180px;padding:8px 10px;border-radius:14px;border:0.5px solid rgba(148,163,184,.24);background:rgba(255,255,255,.96);color:var(--color-text-primary);font:inherit;font-size:12px}
 .assistant-meta{font-size:10px;color:var(--color-text-secondary);margin-top:6px}
 .assistant-output{margin-top:10px;padding:10px 11px;border-radius:14px;font-size:11px;color:var(--color-text-secondary);line-height:1.55;white-space:pre-wrap;background:rgba(15,23,42,.03);border:0.5px dashed rgba(148,163,184,.24);min-height:82px}
 .assistant-links{display:flex;flex-wrap:wrap;gap:6px}
@@ -156,6 +159,18 @@
         <button class="assistant-btn" type="button" onclick="rotateGeminiKey()">Rotate key</button>
         <button class="assistant-btn" type="button" onclick="clearGeminiKey()">Clear key</button>
       </div>
+      <div class="assistant-extend">
+        <h3>Extend calendar</h3>
+        <div class="assistant-sub">Add new topics beyond the current 3-month plan or insert follow-up work for any date.</div>
+        <div class="assistant-extend-row">
+          <input id="extendTopicInput" class="assistant-extend-input" type="text" placeholder="Example: Advanced React Query practice, 3 LeetCode problems, or GenAI RAG revision">
+          <button class="assistant-btn" type="button" onclick="extendStudyPlan()">Add to calendar</button>
+        </div>
+        <div class="assistant-extend-row">
+          <button class="assistant-btn" type="button" onclick="extendStudyPlan(true)">Add after plan end</button>
+          <button class="assistant-btn" type="button" onclick="extendStudyPlan(false,true)">Add to selected day</button>
+        </div>
+      </div>
       <div id="assistantMeta" class="assistant-meta">Gemini key source: window.GEMINI_API_KEY or local storage. If no key is set, the assistant uses the built-in local planner.</div>
       <div id="assistantOutput" class="assistant-output"></div>
     </div>
@@ -207,6 +222,12 @@ function sameDay(a,b){
 }
 function getCurrentDateForSelection(){
   return getWeekDates(currentWeek)[currentDay] || new Date();
+}
+
+function getPlanEndDate(){
+  const end=new Date(START);
+  end.setDate(end.getDate()+WEEKS.length*7-1);
+  return end;
 }
 function isDateInPlan(d){
   const start=new Date(START);
@@ -277,6 +298,42 @@ function getBacklogItems(referenceDate){
   return items;
 }
 
+function resolveExtensionDate(usePlanEnd=false){
+  if(usePlanEnd) return new Date(getPlanEndDate().getTime()+24*60*60*1000);
+  return getCurrentDateForSelection();
+}
+
+function addCalendarExtensionFromInput(usePlanEnd=false,forceSelectedDay=false){
+  const input=document.getElementById('extendTopicInput');
+  const text=(input?.value || '').trim();
+  if(!text){
+    setAssistantMeta('Add a topic or follow-up task first, then extend the calendar.');
+    return;
+  }
+  const targetDate=forceSelectedDay ? getCurrentDateForSelection() : resolveExtensionDate(usePlanEnd);
+  calendarExtensions.unshift({
+    id:Date.now(),
+    date:toISODateLocal(targetDate),
+    text,
+    source:forceSelectedDay ? 'selected-day' : (usePlanEnd ? 'after-plan-end' : 'current-day')
+  });
+  calendarExtensions=calendarExtensions.slice(0,40);
+  saveJson(EXTENSIONS_KEY,calendarExtensions);
+  if(input) input.value='';
+  renderSchedule();
+  renderAssistantPanel();
+  setAssistantMeta(`Added to calendar for ${dateStr(targetDate)}. You can keep extending the study plan beyond the 3 months.`);
+}
+
+function extendStudyPlan(usePlanEnd=false,forceSelectedDay=false){
+  addCalendarExtensionFromInput(usePlanEnd,forceSelectedDay);
+}
+
+function getExtensionsForDate(d){
+  const iso=toISODateLocal(d);
+  return calendarExtensions.filter(item => item.date===iso);
+}
+
 const START = new Date(2026,5,7);
 
 const ROADMAP_LINKS={
@@ -294,8 +351,8 @@ const ROADMAP_LINKS={
   ml:{label:"Machine Learning",url:"https://roadmap.sh/ai-engineer"},
   ai:{label:"AI Engineer",url:"https://roadmap.sh/ai-engineer"},
   genai:{label:"AI Engineer",url:"https://roadmap.sh/ai-engineer"},
-  dsa:{label:"DSA",url:"https://roadmap.sh/dsa"},
-  data:{label:"Data Structures",url:"https://roadmap.sh/dsa"},
+  dsa:{label:"DSA",url:"https://roadmap.sh/datastructures-and-algorithms"},
+  data:{label:"Data Structures",url:"https://roadmap.sh/datastructures-and-algorithms"},
   systemdesign:{label:"System Design",url:"https://roadmap.sh/system-design"},
   devops:{label:"DevOps",url:"https://roadmap.sh/devops"},
   mongodb:{label:"MongoDB",url:"https://roadmap.sh/mongodb"},
@@ -312,15 +369,18 @@ const TOPIC_HINTS=[
   {match:["java"],label:"Java deep dive",text:"Core Java, OOP, collections, exceptions, multithreading, and JVM basics.",url:"https://roadmap.sh/java"},
   {match:["python"],label:"Python deep dive",text:"Functions, OOP, data work, and Python tooling for ML.",url:"https://roadmap.sh/python"},
   {match:["ml","machine learning","ai","genai"],label:"AI Engineer deep dive",text:"Math for ML, model building, prompts, RAG, and GenAI systems.",url:"https://roadmap.sh/ai-engineer"},
-  {match:["dsa","algorithm","leetcode","hackerrank"],label:"DSA deep dive",text:"Arrays, strings, trees, graphs, DP, and problem-solving patterns.",url:"https://roadmap.sh/dsa"},
+  {match:["dsa","algorithm","leetcode","hackerrank"],label:"DSA deep dive",text:"Arrays, strings, trees, graphs, DP, and problem-solving patterns.",url:"https://roadmap.sh/datastructures-and-algorithms"},
+  {match:["dsa","algorithm","leetcode","hackerrank"],label:"CodeChef DSA roadmap",text:"A second DSA roadmap for alternate explanations and practice flow.",url:"https://www.codechef.com/roadmap/data-structures-and-algorithms"},
   {match:["system design","architecture"],label:"System Design deep dive",text:"Scalability, caching, queues, sharding, and distributed trade-offs.",url:"https://roadmap.sh/system-design"}
 ];
 
 const ASSISTANT_HISTORY_KEY='tt_assistant_history';
 const REMINDER_KEY='tt_custom_reminders';
 const GEMINI_KEY_STORAGE='tt_gemini_key';
+const EXTENSIONS_KEY='tt_calendar_extensions';
 let assistantHistory=[];
 let customReminders=[];
+let calendarExtensions=[];
 
 const WEEKS=[
 {phase:"Phase 1 — Foundations",theme:"HTML · CSS · Java OOP Basics · Arrays",days:[
@@ -804,6 +864,7 @@ function saveJson(key,value){
 
 assistantHistory = Array.isArray(loadJson(ASSISTANT_HISTORY_KEY,[])) ? loadJson(ASSISTANT_HISTORY_KEY,[]) : [];
 customReminders = Array.isArray(loadJson(REMINDER_KEY,[])) ? loadJson(REMINDER_KEY,[]) : [];
+calendarExtensions = Array.isArray(loadJson(EXTENSIONS_KEY,[])) ? loadJson(EXTENSIONS_KEY,[]) : [];
 
 function saveProgress(){ try{localStorage.setItem('tt_progress',JSON.stringify(stored));}catch(e){} }
 
@@ -1114,7 +1175,7 @@ function fillTodayPlan(){
 
 function openRoadmapForCurrentFocus(){
   const matches=getRoadmapMatches(getCurrentFocusText());
-  const url=matches[0]?.url || 'https://roadmap.sh';
+  const url=matches[0]?.url || 'https://roadmap.sh/datastructures-and-algorithms';
   window.open(url,'_blank','noopener,noreferrer');
 }
 
@@ -1266,6 +1327,15 @@ function renderSchedule(){
     div.addEventListener('click',()=>{ openSlot=openSlot===si?null:si; renderSchedule(); });
     sch.appendChild(div);
   });
+
+  const extensionItems=getExtensionsForDate(dt);
+  if(extensionItems.length){
+    const extensionWrap=document.createElement('div');
+    extensionWrap.className='assistant-card';
+    extensionWrap.style.marginTop='6px';
+    extensionWrap.innerHTML=`<h3>Custom follow-ups</h3><div class="assistant-list">${extensionItems.map(item => `<div class="assistant-item"><strong>${item.source==='after-plan-end' ? 'Beyond plan' : 'Added task'}:</strong> ${item.text}</div>`).join('')}</div>`;
+    sch.appendChild(extensionWrap);
+  }
 
   const calendarBadge=document.getElementById('calendarBadge');
   if(calendarBadge) calendarBadge.textContent=`${dateStr(dt)} selected · jump anywhere with the calendar button`;
