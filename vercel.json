@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/3month_study_timetable_june_sep_2026.html"
+    }
+  ]
+}
