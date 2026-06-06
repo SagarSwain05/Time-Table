@@ -1,0 +1,1199 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{position:relative;padding:1rem;font-family:var(--font-sans);max-width:1180px;margin:0 auto;isolation:isolate}
+.wrap::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at top left,rgba(83,74,183,.08),transparent 28%),radial-gradient(circle at top right,rgba(29,158,117,.10),transparent 24%),linear-gradient(180deg,rgba(255,255,255,.64),rgba(255,255,255,.88));border:1px solid rgba(148,163,184,.12);border-radius:24px;z-index:-1;box-shadow:0 20px 60px rgba(15,23,42,.08)}
+.topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;padding:12px 14px;border:0.5px solid rgba(148,163,184,.18);border-radius:18px;background:rgba(255,255,255,.75);backdrop-filter:blur(10px)}
+.title-area h2{font-size:18px;font-weight:650;letter-spacing:-.02em;color:var(--color-text-primary)}
+.title-area p{font-size:12px;color:var(--color-text-secondary);margin-top:4px;max-width:58ch}
+.stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.stat{background:linear-gradient(180deg,var(--color-background-primary),rgba(255,255,255,.92));border:0.5px solid var(--color-border-tertiary);border-radius:16px;padding:10px 14px;text-align:center;box-shadow:0 6px 18px rgba(15,23,42,.04);min-width:122px}
+.stat-n{font-size:20px;font-weight:650;color:var(--color-text-primary);letter-spacing:-.02em}
+.stat-l{font-size:11px;color:var(--color-text-secondary)}
+.nav-row{display:flex;align-items:center;gap:8px;margin-bottom:.85rem;flex-wrap:wrap;padding:0 2px}
+.nav-btn{font-size:12px;padding:7px 12px;border-radius:999px;border:0.5px solid rgba(148,163,184,.28);background:rgba(255,255,255,.8);color:var(--color-text-secondary);cursor:pointer;box-shadow:0 4px 12px rgba(15,23,42,.04);transition:transform .15s ease,background .15s ease,border-color .15s ease}
+.nav-btn:hover{background:#fff;border-color:rgba(83,74,183,.28);transform:translateY(-1px)}
+.week-label{font-size:13px;font-weight:650;color:var(--color-text-primary);flex:1;text-align:center;letter-spacing:-.01em}
+.phase-badge{font-size:11px;padding:4px 11px;border-radius:999px;font-weight:650;box-shadow:inset 0 0 0 1px rgba(255,255,255,.48)}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:.8rem;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.72);border:0.5px solid rgba(148,163,184,.16)}
+.leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-text-secondary)}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px rgba(255,255,255,.85)}
+.day-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.85rem}
+.dtab{font-size:11px;padding:7px 11px;border-radius:999px;border:0.5px solid rgba(148,163,184,.22);background:rgba(255,255,255,.84);color:var(--color-text-secondary);cursor:pointer;transition:all .15s ease;white-space:nowrap;box-shadow:0 4px 12px rgba(15,23,42,.04)}
+.dtab:hover{transform:translateY(-1px);border-color:rgba(83,74,183,.26)}
+.dtab.active{background:linear-gradient(135deg,#534AB7,#6A5DDC);color:#F4F1FF;border-color:#534AB7;box-shadow:0 10px 22px rgba(83,74,183,.2)}
+.dtab.done{border-color:#A7F3D0;color:#065F46;background:#ECFDF5}
+.focus-bar{font-size:12px;color:var(--color-text-secondary);margin-bottom:.7rem;padding:10px 12px;background:rgba(255,255,255,.82);border-radius:16px;border:0.5px solid rgba(148,163,184,.16);border-left:4px solid #534AB7;box-shadow:0 6px 18px rgba(15,23,42,.04)}
+.schedule{display:flex;flex-direction:column;gap:8px}
+.slot{border-radius:18px;padding:11px 14px;border:0.5px solid rgba(148,163,184,.18);cursor:pointer;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;background:rgba(255,255,255,.84);box-shadow:0 6px 18px rgba(15,23,42,.04)}
+.slot:hover{border-color:rgba(83,74,183,.2);transform:translateY(-1px);box-shadow:0 10px 24px rgba(15,23,42,.08)}
+.slot-header{display:flex;align-items:center;gap:10px}
+.time-badge{font-size:10px;font-weight:650;padding:4px 8px;border-radius:999px;white-space:nowrap;min-width:84px;text-align:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+.slot-info{flex:1;min-width:0}
+.slot-title{font-size:13px;font-weight:650;color:var(--color-text-primary);letter-spacing:-.01em}
+.slot-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.slot-right{display:flex;align-items:center;gap:6px}
+.chk{width:18px;height:18px;border-radius:6px;border:0.5px solid rgba(148,163,184,.28);background:rgba(255,255,255,.95);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.chk.done{background:#1D9E75;border-color:#1D9E75;color:#fff}
+.arrow{font-size:11px;transition:transform .2s;color:var(--color-text-secondary)}
+.slot.open .arrow{transform:rotate(180deg)}
+.topics{display:none;margin-top:10px;border-top:0.5px solid rgba(148,163,184,.16);padding-top:10px}
+.slot.open .topics{display:block}
+.topics-grid{display:flex;flex-wrap:wrap;gap:6px}
+.ttag{font-size:11px;padding:5px 9px;border-radius:999px;background:rgba(83,74,183,.08);color:var(--color-text-secondary);display:inline-block;cursor:pointer;transition:all .12s;border:0.5px solid rgba(83,74,183,.12)}
+.ttag.done-tag{background:#E1F5EE;color:#065F46;text-decoration:line-through}
+.progress-bar-wrap{margin-top:6px}
+.progress-bar-bg{height:5px;background:rgba(148,163,184,.16);border-radius:999px;overflow:hidden}
+.progress-bar-fill{height:5px;background:linear-gradient(90deg,#1D9E75,#5DD6A6);border-radius:999px;transition:width .3s}
+.prog-label{font-size:10px;color:var(--color-text-secondary);margin-top:2px}
+.assistant-panel{margin-top:1rem;padding:14px;border:0.5px solid rgba(148,163,184,.18);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(248,250,252,.94));box-shadow:0 12px 34px rgba(15,23,42,.06)}
+.assistant-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:.85rem}
+.assistant-title{font-size:13px;font-weight:700;color:var(--color-text-primary);letter-spacing:-.01em}
+.assistant-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.assistant-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
+.assistant-card{border:0.5px solid rgba(148,163,184,.16);border-radius:18px;background:rgba(255,255,255,.94);padding:12px;box-shadow:0 6px 18px rgba(15,23,42,.04)}
+.assistant-card h3{font-size:12px;font-weight:700;color:var(--color-text-primary);margin-bottom:7px;letter-spacing:-.01em}
+.assistant-list{display:flex;flex-direction:column;gap:6px}
+.assistant-item{font-size:11px;color:var(--color-text-secondary);padding:8px 10px;border-radius:12px;background:linear-gradient(180deg,rgba(83,74,183,.06),rgba(83,74,183,.03));border:0.5px solid rgba(83,74,183,.08)}
+.assistant-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.assistant-btn{font-size:11px;padding:7px 10px;border-radius:999px;border:0.5px solid rgba(83,74,183,.18);background:linear-gradient(180deg,#fff,#F8FAFF);color:var(--color-text-primary);cursor:pointer;box-shadow:0 4px 12px rgba(15,23,42,.04);transition:transform .15s ease,border-color .15s ease}
+.assistant-btn:hover{background:#fff;border-color:rgba(83,74,183,.3);transform:translateY(-1px)}
+.assistant-input{width:100%;min-height:86px;resize:vertical;padding:11px 12px;border-radius:14px;border:0.5px solid rgba(148,163,184,.24);background:rgba(255,255,255,.96);color:var(--color-text-primary);font:inherit;font-size:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.88)}
+.assistant-key-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.assistant-key{flex:1;min-width:180px;padding:8px 10px;border-radius:14px;border:0.5px solid rgba(148,163,184,.24);background:rgba(255,255,255,.96);color:var(--color-text-primary);font:inherit;font-size:12px}
+.assistant-meta{font-size:10px;color:var(--color-text-secondary);margin-top:6px}
+.assistant-output{margin-top:10px;padding:10px 11px;border-radius:14px;font-size:11px;color:var(--color-text-secondary);line-height:1.55;white-space:pre-wrap;background:rgba(15,23,42,.03);border:0.5px dashed rgba(148,163,184,.24);min-height:82px}
+.assistant-links{display:flex;flex-wrap:wrap;gap:6px}
+.roadmap-link{font-size:11px;padding:6px 9px;border-radius:999px;background:#EEF2FF;color:#3730A3;text-decoration:none;border:0.5px solid #C7D2FE;box-shadow:0 4px 12px rgba(59,130,246,.08)}
+.roadmap-link:hover{background:#E0E7FF;transform:translateY(-1px)}
+.reminder-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:7px 9px;border-radius:999px;background:#ECFDF5;color:#065F46;border:0.5px solid #A7F3D0;box-shadow:0 4px 12px rgba(16,185,129,.07)}
+.reminder-empty{font-size:11px;color:var(--color-text-secondary)}
+@media (max-width: 720px){
+  .wrap{padding:.65rem}
+  .assistant-grid{grid-template-columns:1fr}
+  .topbar,.assistant-panel,.assistant-card{border-radius:16px}
+  .stat{min-width:calc(50% - 4px)}
+}
+</style>
+
+<div class="wrap">
+<h2 class="sr-only">3-month study timetable June–September 2026 with daily progress tracking</h2>
+
+<div class="topbar">
+  <div class="title-area">
+    <h2>Study roadmap — from tomorrow through September 2026</h2>
+    <p>Click any topic tag to mark it done · Click a slot to expand · Track your daily progress</p>
+  </div>
+</div>
+
+<div class="stats-row" id="statsRow"></div>
+
+<div class="nav-row">
+  <button class="nav-btn" id="prevWeek" onclick="changeWeek(-1)"><i class="ti ti-arrow-left" style="font-size:13px"></i> Prev</button>
+  <div class="week-label" id="weekLabel"></div>
+  <span class="phase-badge" id="phaseBadge"></span>
+  <button class="nav-btn" id="nextWeek" onclick="changeWeek(1)">Next <i class="ti ti-arrow-right" style="font-size:13px"></i></button>
+</div>
+
+<div class="legend">
+  <div class="leg"><div class="dot" style="background:#5DCAA5"></div>Morning</div>
+  <div class="leg"><div class="dot" style="background:#AFA9EC"></div>Aptitude / Math</div>
+  <div class="leg"><div class="dot" style="background:#85B7EB"></div>Development</div>
+  <div class="leg"><div class="dot" style="background:#F0997B"></div>Placement prep</div>
+  <div class="leg"><div class="dot" style="background:#FAC775"></div>DSA & Coding</div>
+</div>
+
+<div class="day-tabs" id="dayTabs"></div>
+<div class="focus-bar" id="focusBar"></div>
+<div class="schedule" id="schedule"></div>
+
+<div class="assistant-panel">
+  <div class="assistant-head">
+    <div>
+      <div class="assistant-title">Study assistant</div>
+      <div class="assistant-sub">Ask for the next task, a roadmap.sh deep dive, reminders for today, or a custom schedule update.</div>
+    </div>
+    <div class="assistant-links" id="quickRoadmapLinks"></div>
+  </div>
+
+  <div class="assistant-grid">
+    <div class="assistant-card">
+      <h3>Chat with assistant</h3>
+      <textarea id="assistantPrompt" class="assistant-input" placeholder="Example: I finished HTML basics, what should I learn next? Or: add more JavaScript practice and one GenAI topic for today."></textarea>
+      <div class="assistant-actions">
+        <button class="assistant-btn" type="button" onclick="runAssistant()">Ask assistant</button>
+        <button class="assistant-btn" type="button" onclick="addTodayReminder()">Add today reminder</button>
+        <button class="assistant-btn" type="button" onclick="fillTodayPlan()">Use today's plan</button>
+        <button class="assistant-btn" type="button" onclick="openRoadmapForCurrentFocus()">Open deep dive</button>
+      </div>
+      <div class="assistant-key-row">
+        <input id="geminiKeyInput" class="assistant-key" type="password" placeholder="Optional: paste Gemini API key here for AI replies">
+        <button class="assistant-btn" type="button" onclick="saveGeminiKey()">Save & validate</button>
+        <button class="assistant-btn" type="button" onclick="validateCurrentGeminiKey()">Validate key</button>
+        <button class="assistant-btn" type="button" onclick="rotateGeminiKey()">Rotate key</button>
+        <button class="assistant-btn" type="button" onclick="clearGeminiKey()">Clear key</button>
+      </div>
+      <div id="assistantMeta" class="assistant-meta">Gemini key source: window.GEMINI_API_KEY or local storage. If no key is set, the assistant uses the built-in local planner.</div>
+      <div id="assistantOutput" class="assistant-output"></div>
+    </div>
+    <div class="assistant-card">
+      <h3>Today’s reminders</h3>
+      <div id="todayReminders" class="assistant-list"></div>
+      <h3 style="margin-top:10px">Next tasks</h3>
+      <div id="nextTasks" class="assistant-list"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const cats={
+  morning:{color:"#5DCAA5",text:"#04342C"},
+  apt:{color:"#AFA9EC",text:"#26215C"},
+  dev:{color:"#85B7EB",text:"#042C53"},
+  placement:{color:"#F0997B",text:"#4A1B0C"},
+  dsa:{color:"#FAC775",text:"#412402"}
+};
+
+const DAY_NAMES=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const DAY_FULL=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+function dateStr(d){return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short"});}
+
+const START = new Date(2026,5,7);
+
+const ROADMAP_LINKS={
+  html:{label:"HTML",url:"https://roadmap.sh/html"},
+  css:{label:"CSS",url:"https://roadmap.sh/css"},
+  javascript:{label:"JavaScript",url:"https://roadmap.sh/javascript"},
+  react:{label:"React",url:"https://roadmap.sh/react"},
+  node:{label:"Node.js",url:"https://roadmap.sh/nodejs"},
+  nodejs:{label:"Node.js",url:"https://roadmap.sh/nodejs"},
+  express:{label:"Backend",url:"https://roadmap.sh/backend"},
+  backend:{label:"Backend",url:"https://roadmap.sh/backend"},
+  frontend:{label:"Frontend",url:"https://roadmap.sh/frontend"},
+  java:{label:"Java",url:"https://roadmap.sh/java"},
+  python:{label:"Python",url:"https://roadmap.sh/python"},
+  ml:{label:"Machine Learning",url:"https://roadmap.sh/ai-engineer"},
+  ai:{label:"AI Engineer",url:"https://roadmap.sh/ai-engineer"},
+  genai:{label:"AI Engineer",url:"https://roadmap.sh/ai-engineer"},
+  dsa:{label:"DSA",url:"https://roadmap.sh/dsa"},
+  data:{label:"Data Structures",url:"https://roadmap.sh/dsa"},
+  systemdesign:{label:"System Design",url:"https://roadmap.sh/system-design"},
+  devops:{label:"DevOps",url:"https://roadmap.sh/devops"},
+  mongodb:{label:"MongoDB",url:"https://roadmap.sh/mongodb"},
+  typescript:{label:"TypeScript",url:"https://roadmap.sh/typescript"}
+};
+
+const TOPIC_HINTS=[
+  {match:["html"],label:"HTML deep dive",text:"Semantic HTML, forms, accessibility, and document structure.",url:"https://roadmap.sh/html"},
+  {match:["css"],label:"CSS deep dive",text:"Layout, Flexbox, Grid, responsive design, and animation.",url:"https://roadmap.sh/css"},
+  {match:["javascript","js"],label:"JavaScript deep dive",text:"Core JS, DOM, async patterns, and modern ES6+.",url:"https://roadmap.sh/javascript"},
+  {match:["react"],label:"React deep dive",text:"Components, hooks, state management, and real-world app structure.",url:"https://roadmap.sh/react"},
+  {match:["node","express","backend"],label:"Backend deep dive",text:"Node.js, API design, middleware, authentication, and deployment.",url:"https://roadmap.sh/backend"},
+  {match:["mongo"],label:"MongoDB deep dive",text:"Schemas, indexes, aggregation, and data modeling.",url:"https://roadmap.sh/mongodb"},
+  {match:["java"],label:"Java deep dive",text:"Core Java, OOP, collections, exceptions, multithreading, and JVM basics.",url:"https://roadmap.sh/java"},
+  {match:["python"],label:"Python deep dive",text:"Functions, OOP, data work, and Python tooling for ML.",url:"https://roadmap.sh/python"},
+  {match:["ml","machine learning","ai","genai"],label:"AI Engineer deep dive",text:"Math for ML, model building, prompts, RAG, and GenAI systems.",url:"https://roadmap.sh/ai-engineer"},
+  {match:["dsa","algorithm","leetcode","hackerrank"],label:"DSA deep dive",text:"Arrays, strings, trees, graphs, DP, and problem-solving patterns.",url:"https://roadmap.sh/dsa"},
+  {match:["system design","architecture"],label:"System Design deep dive",text:"Scalability, caching, queues, sharding, and distributed trade-offs.",url:"https://roadmap.sh/system-design"}
+];
+
+const ASSISTANT_HISTORY_KEY='tt_assistant_history';
+const REMINDER_KEY='tt_custom_reminders';
+const GEMINI_KEY_STORAGE='tt_gemini_key';
+let assistantHistory=[];
+let customReminders=[];
+
+const WEEKS=[
+{phase:"Phase 1 — Foundations",theme:"HTML · CSS · Java OOP Basics · Arrays",days:[
+  {focus:"HTML fundamentals + Java setup + Arrays",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Wake · freshen · breakfast · stretch",topics:["Wake up at 8:00","Freshen & hygiene","5-min light stretch","Healthy breakfast","Plan the day — write 3 goals"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — number systems & logic",sub:"Binary · octal · hex · algebra",topics:["Number systems: binary, octal, hex conversions","Basic algebra & linear equations","Logical reasoning intro","Set theory: union, intersection","Practice 5 aptitude Qs on HackerRank"]},
+    {time:"11–12",cat:"apt",title:"Java — setup & first program",sub:"JDK · JVM · variables · data types",topics:["Install JDK 17 + IntelliJ/VS Code","JVM vs JRE vs JDK concept","Hello World program","Primitive data types: int, double, boolean, char","Variable declaration & naming conventions"]},
+    {time:"12–15",cat:"dev",title:"HTML — document structure",sub:"Tags · semantic HTML5 · forms",topics:["DOCTYPE, html, head, body","Semantic tags: header, nav, main, section, article, footer","Text tags: h1–h6, p, span, strong, em","Links & images (a, img, alt)","Lists: ol, ul, dl","Tables: table, tr, td, th","HTML forms & input types","Accessibility attrs: alt, aria-label, role"]},
+    {time:"15–16",cat:"dev",title:"Break + review",sub:"Walk · revise HTML notes",topics:["Lunch & 10-min walk","Revise HTML notes","Self-quiz on semantic tags","Quick diagram of HTML structure"]},
+    {time:"16–19",cat:"placement",title:"Placement prep — resume & verbal",sub:"Grammar · HR patterns · resume",topics:["English grammar fundamentals","HR question patterns intro","Build/update resume (use Notion/Canva)","Verbal ability: synonyms, antonyms","Percentages & ratios warmup","HackerRank: 3 easy problems"]},
+    {time:"19–22",cat:"dsa",title:"DSA — arrays + Java control flow",sub:"Array ops · loops · HackerRank",topics:["What is DSA and why it matters","Arrays: declaration, indexing, traversal in Java","Insert, delete, search in array","Solve 2 easy array problems on HackerRank","Java control flow: if/else, switch","Java loops: for, while, do-while"]}
+  ]},
+  {focus:"CSS fundamentals + Java OOP intro + Strings",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · journal · review Mon notes",topics:["Freshen up & breakfast","Write 3 things to accomplish today","5-min breathing exercise","Review yesterday's notes (10 min)"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — percentages & ratios",sub:"Speed · distance · probability",topics:["Percentage problems: increase, decrease, successive","Ratio & proportion","Speed-distance-time formulas","Basic probability: P(A)","Practice 6 aptitude Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — OOP intro",sub:"Class · object · constructor · this",topics:["What is OOP","Class vs object","Creating a class in Java","Default & parameterized constructors","this keyword","Practice: create Student class"]},
+    {time:"12–15",cat:"dev",title:"CSS fundamentals",sub:"Selectors · box model · typography",topics:["CSS syntax & linking stylesheet","Selectors: element, class, id, pseudo-class, pseudo-element","Box model: margin, border, padding, content","display: block, inline, inline-block","Typography: font-family, size, weight, line-height","Colors: hex, rgb, hsl","Background properties","CSS custom properties (variables)","Simple card design project"]},
+    {time:"15–16",cat:"dev",title:"Break + mini project",sub:"Style Monday HTML with CSS",topics:["Style the HTML form from Monday","Apply colors & typography","Add hover effects","Push to GitHub"]},
+    {time:"16–19",cat:"placement",title:"Placement prep — quant & research",sub:"Time-work · profit-loss · companies",topics:["Time & work problems","Profit & loss basics","Research: TCS, Infosys, Wipro hiring patterns","Mock HR Qs (record yourself)","HackerRank: 3 easy problems"]},
+    {time:"19–22",cat:"dsa",title:"DSA — strings + Java practice",sub:"String methods · palindrome · HackerRank",topics:["Strings in Java: declaration, immutability","String methods: length, charAt, substring, indexOf, toUpperCase","StringBuilder vs String","String reversal & palindrome check","Solve 2 HackerRank string problems","Java OOP: inheritance basics"]}
+  ]},
+  {focus:"CSS Flexbox + Grid + Java Inheritance + Binary Search",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · goals · review Tue",topics:["Morning freshen","Healthy breakfast","Review Tue notes 10 min","Set 3 clear goals for today"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — permutations & combinations",sub:"nPr · nCr · seating · puzzles",topics:["Fundamental counting principle","Permutations nPr","Combinations nCr","Seating arrangement problems","Logical sequence puzzles","Practice 6 Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — inheritance & polymorphism",sub:"extends · super · method overriding",topics:["Inheritance: extends keyword","super keyword usage","Method overriding","Polymorphism: compile-time vs runtime","instanceof operator","Practice: Animal → Dog/Cat hierarchy"]},
+    {time:"12–15",cat:"dev",title:"CSS Flexbox + Grid + responsive",sub:"Flexbox · Grid · media queries",topics:["Flexbox: flex-direction, justify-content, align-items, flex-wrap","Flex children: grow, shrink, basis","CSS Grid: grid-template-columns/rows","Grid areas & named lines","Media queries (@media)","Responsive navbar project","Mobile-first mindset"]},
+    {time:"15–16",cat:"dev",title:"Break + responsive landing page",sub:"3-section responsive page",topics:["3-section landing page","Flexbox/Grid layout","Make fully responsive","Deploy to GitHub Pages"]},
+    {time:"16–19",cat:"placement",title:"Placement prep — MCQs & networking",sub:"OS · TCP/IP · LinkedIn",topics:["Data interpretation problems","Technical MCQs: OS basics","TCP/IP, HTTP, DNS concepts","LinkedIn profile optimization","HackerRank: 3 problems"]},
+    {time:"19–22",cat:"dsa",title:"DSA — searching algorithms",sub:"Linear · binary search · Big-O",topics:["Linear search O(n): logic & code","Binary search O(log n): iterative & recursive","Time complexity intro: O(1), O(n), O(log n), O(n²)","Big-O notation rules","Solve binary search problems on LeetCode","Java: interface & abstract class basics"]}
+  ]},
+  {focus:"JavaScript core + Java Encapsulation + Sorting",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · stretch · CSS quiz",topics:["Freshen up & breakfast","10-min light walk or stretch","Review previous notes","Quick quiz: Flexbox/Grid from Wed"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — series & coding-decoding",sub:"Number series · letter analogies",topics:["Number series patterns: +n, ×n, alternating","Letter & symbol series","Coding-decoding problems","Odd one out","Practice 8 aptitude Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — encapsulation & access modifiers",sub:"private · getters · setters",topics:["Encapsulation concept","Access modifiers: private, public, protected, default","Getters & setters pattern","Data hiding principle","Practice: BankAccount class with encapsulated balance"]},
+    {time:"12–15",cat:"dev",title:"JavaScript — core fundamentals",sub:"Variables · functions · DOM · events",topics:["var vs let vs const","Data types: string, number, boolean, null, undefined, object, symbol","Operators: arithmetic, comparison, logical, ternary","Control flow: if/else, switch, ternary","Functions: declaration, expression, arrow functions","Scope: local vs global vs block","Arrays & objects in JS","DOM: getElementById, querySelector","Event listeners: click, input, keydown","Simple interactive counter project"]},
+    {time:"15–16",cat:"dev",title:"Break + to-do list app",sub:"JS DOM to-do with localStorage",topics:["To-do list: add & delete items","Use localStorage for persistence","Style with CSS from previous days","Push to GitHub"]},
+    {time:"16–19",cat:"placement",title:"Placement prep — aptitude mock",sub:"30-min mock · GD topics",topics:["Full 30-min aptitude mock test","Analyze mistakes carefully","HackerRank: 5 problems (Easy)","Group discussion topics practice","Company patterns: TCS, Infosys, Wipro"]},
+    {time:"19–22",cat:"dsa",title:"DSA — sorting algorithms",sub:"Bubble · selection · insertion sort",topics:["Bubble sort: logic, code, O(n²)","Selection sort: logic & code","Insertion sort: logic & code","When to use which sort","Visualize on VisuAlgo.net","Java: Collections.sort(), Comparable, Comparator","Solve 2 sorting problems on HackerRank"]}
+  ]},
+  {focus:"JavaScript Advanced + Python intro + Merge/Quick sort",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · meditation · week review",topics:["Freshen up","Healthy breakfast","5-min meditation or deep breathing","Review the whole week's learning"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — data interpretation",sub:"Bar charts · pie · line graphs",topics:["Reading bar graphs accurately","Pie chart percentage calculation","Line graph trends","Data sufficiency problems","Practice 6 DI questions"]},
+    {time:"11–12",cat:"apt",title:"Python intro + ML math teaser",sub:"Setup · variables · why Python for AI",topics:["Install Python 3.11 + VS Code","Python vs Java: key syntax differences","Variables, data types in Python","print(), input() functions","Why Python dominates ML/AI","Math needed: vectors & matrices (concept)","NumPy awareness — don't deep-dive yet"]},
+    {time:"12–15",cat:"dev",title:"JavaScript — advanced ES6+",sub:"Closures · promises · async/await · fetch",topics:["Closures: what & why","Higher-order functions: map, filter, reduce","Callbacks & callback hell problem","Promises: .then(), .catch(), .finally()","async/await syntax","fetch API: GET request, JSON parsing","Error handling: try/catch/finally","ES6+: destructuring, spread, rest, template literals","Mini project: weather app with public API"]},
+    {time:"15–16",cat:"dev",title:"Break + deploy weather app",sub:"GitHub Pages deploy + README",topics:["Push project to GitHub","Set up GitHub Pages deploy","Write basic README.md","Share link on LinkedIn"]},
+    {time:"16–19",cat:"placement",title:"Placement + GenAI awareness",sub:"What is GenAI · LLMs · AI tools",topics:["What is Generative AI","LLMs: GPT, Claude, Gemini basics","Prompt engineering fundamentals","AI tools for devs: Copilot, Cursor","GenAI impact on tech careers","HackerRank: 3 problems","Mock technical interview Q&A"]},
+    {time:"19–22",cat:"dsa",title:"DSA — merge sort & quick sort",sub:"Divide & conquer · recursion",topics:["Recursion: base case, recursive case","Stack memory in recursion","Merge sort: logic, code, O(n log n)","Quick sort: pivot, partition, O(n log n) avg","Tail recursion concept","LeetCode: 2 recursion problems","Java: recursive methods practice"]}
+  ]},
+  {focus:"React intro + Java Generics + Linked Lists + ML Math",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · weekly journal · review",topics:["Freshen up & breakfast","Weekly progress journal (5 min)","Review all notes from Mon–Fri","Identify weakest topic to revisit today"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — linear algebra",sub:"Vectors · matrices · dot product",topics:["Scalar vs vector vs matrix","Vector addition & scalar multiplication","Matrix multiplication rules","Dot product & its applications","Transpose of a matrix","Identity matrix","Eigenvalues & eigenvectors (concept only)","Khan Academy: linear algebra module"]},
+    {time:"11–12",cat:"apt",title:"Java — generics & collections",sub:"ArrayList · HashMap · Iterator",topics:["Generics: <T> syntax & type safety","ArrayList: add, remove, get, size","HashMap: put, get, containsKey, entrySet","LinkedList in Java Collections","Iterator pattern & enhanced for-loop","When to use which collection","Practice: student grade tracker with HashMap"]},
+    {time:"12–15",cat:"dev",title:"React fundamentals",sub:"Components · JSX · props · hooks",topics:["What is React, virtual DOM concept","Create React app with Vite","Functional components","JSX syntax rules","Props: passing & receiving data","useState hook","useEffect hook","Conditional rendering","List rendering with .map()","Component folder structure","Mini project: React counter & todo"]},
+    {time:"15–16",cat:"dev",title:"Break + Node.js intro",sub:"Node · npm · Express · Postman",topics:["What is Node.js, V8 engine","npm init, package.json structure","First Express server","GET/POST routes","Understanding req, res objects","Postman for API testing"]},
+    {time:"16–19",cat:"placement",title:"Placement + ML supervised learning",sub:"Regression · classification · gradient descent",topics:["ML types: supervised, unsupervised, reinforcement","Regression vs classification","Training data, features, labels","Overfitting & underfitting concept","Linear regression intuition","Cost function & gradient descent concept","HackerRank: 4 problems","45-min aptitude mock test"]},
+    {time:"19–22",cat:"dsa",title:"DSA — linked lists",sub:"Singly · doubly · Floyd's cycle",topics:["Linked list vs array","Node structure","Singly linked list: insert, delete, traverse","Doubly linked list: prev pointer","Circular linked list concept","Detect loop: Floyd's cycle algorithm","LeetCode: reverse a linked list","Java: implement custom LinkedList"]}
+  ]},
+  {focus:"MERN overview + Python data + Stacks & Queues + Week revision",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Rest · plan week 2 · tracker",topics:["Freshen up","Relaxed breakfast","Light 15-min walk","Plan Week 2 goals","Update personal progress tracker"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — statistics & probability",sub:"Mean · std dev · Bayes",topics:["Mean, median, mode","Variance & standard deviation","Normal distribution (bell curve)","Probability: P(A), P(A∩B), P(A|B)","Bayes theorem (concept level)","Correlation vs causation","Scatter plots & trends"]},
+    {time:"11–12",cat:"apt",title:"Python for data — pandas & NumPy",sub:"Arrays · DataFrames · operations",topics:["NumPy arrays: creation, indexing, slicing","Array operations: add, multiply","Pandas Series & DataFrame","Loading CSV with pd.read_csv()","df.head(), df.describe(), df.info()","Filtering rows, selecting columns","Practice: analyze a sample dataset"]},
+    {time:"12–15",cat:"dev",title:"MERN stack overview + MongoDB",sub:"Atlas · Mongoose · REST API · Axios",topics:["What is MERN stack & full-stack flow","MongoDB: document model, collections","MongoDB Atlas setup (free tier)","Mongoose: schema, model, CRUD","Express + Mongoose: REST API (GET/POST/PUT/DELETE)","Connect React frontend with Express backend","CORS handling","Axios in React for API calls","Project: basic CRUD notes app"]},
+    {time:"15–16",cat:"dev",title:"Break + GitHub practice",sub:"Commit · branches · merge",topics:["git init, clone, add, commit, push","Branching: git checkout -b feature","Merge branches: git merge","Resolve basic conflicts","Create GitHub portfolio repo"]},
+    {time:"16–19",cat:"placement",title:"Full mock test + career planning",sub:"60-min mock · resume · GenAI tools",topics:["60-min full aptitude + reasoning mock","Detailed mistake analysis","Review & update resume","GenAI tool: write a dev prompt","Kaggle: join a beginner ML challenge","HackerRank: 5 mixed problems","Weekly learning journal entry"]},
+    {time:"19–22",cat:"dsa",title:"DSA — stacks & queues + revision",sub:"Stack · Queue · BFS/DFS concept",topics:["Stack: LIFO, push, pop, peek","Queue: FIFO, enqueue, dequeue","Implement stack with array in Java","Implement queue with array","Java: Stack class, ArrayDeque","Valid parentheses (LeetCode #20)","BFS vs DFS concept intro","Full Week 1 DSA revision","Plan Week 2: Trees, Hashing, Node.js"]}
+  ]}
+]},
+
+{phase:"Phase 1 — Foundations",theme:"CSS Advanced · React Hooks · Java Exceptions · Trees",days:[
+  {focus:"CSS animations + Java exceptions + Binary Trees",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · plan · stretch",topics:["Morning freshen & breakfast","Stretch 5 mins","Plan the day","Review Week 1 summary"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — clocks & calendars",sub:"Clock angles · odd days",topics:["Clock angle problems","Calendar: odd days method","Day-of-week calculations","Find date of a weekday","Practice 8 Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — exception handling",sub:"try/catch · custom exceptions",topics:["try/catch/finally","throw & throws keywords","Checked vs unchecked exceptions","Custom exception classes","Practice: file-not-found scenario"]},
+    {time:"12–15",cat:"dev",title:"CSS animations + transitions",sub:"@keyframes · transform · animation",topics:["transition property: timing, duration, easing","@keyframes: from/to, % stops","transform: rotate, scale, translate, skew","animation: name, duration, delay, iteration","Animated card hover effect","Loading spinner","Skeleton screen animation"]},
+    {time:"15–16",cat:"dev",title:"Break + animate project",sub:"Add animations to landing page",topics:["Add entrance animations to landing page","Smooth scroll behavior","Animated hamburger menu"]},
+    {time:"16–19",cat:"placement",title:"Placement — verbal ability",sub:"RC · para-jumbles · sentence correction",topics:["Reading comprehension strategies","Para-jumble 5-sentence sets","Sentence correction rules","Fill in the blanks","3 HackerRank Qs"]},
+    {time:"19–22",cat:"dsa",title:"DSA — binary trees",sub:"Node · traversal · BFS · height",topics:["Tree terminology: root, node, leaf, height","Binary tree node structure in Java","Insertion into binary tree","Pre-order, in-order, post-order traversal","Level-order traversal (BFS)","Height of tree recursively","LeetCode: max depth of binary tree"]}
+  ]},
+  {focus:"React advanced hooks + Java multithreading + BST",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · journal · review",topics:["Freshen & breakfast","Journal: 3 wins from yesterday","Review Mon notes 10 min"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — mixture & alligation",sub:"Alligation method · mean price",topics:["Alligation: weighted average rule","Mixture problems: add/remove liquid","Mean price formula","Practice 6 Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — multithreading basics",sub:"Thread · Runnable · sleep · sync",topics:["Thread class vs Runnable interface","start() vs run()","Thread.sleep()","Synchronization concept","volatile keyword concept"]},
+    {time:"12–15",cat:"dev",title:"React — advanced hooks",sub:"useContext · useReducer · custom hooks",topics:["useContext: create & consume context","Context API for global state","useReducer: reducer function pattern","useMemo & useCallback for performance","Custom hooks: useLocalStorage, useFetch","Dark mode toggle project with context"]},
+    {time:"15–16",cat:"dev",title:"Break + refactor todo",sub:"Refactor todo with useReducer",topics:["Replace useState with useReducer in todo","Extract custom useTodo hook","Test all functionality"]},
+    {time:"16–19",cat:"placement",title:"Placement — Java & OOP MCQs",sub:"Theory MCQs · output Qs",topics:["OOP theory MCQs: polymorphism, encapsulation","Java output prediction Qs","5 HackerRank Qs (medium)","Interview HR patterns"]},
+    {time:"19–22",cat:"dsa",title:"DSA — binary search tree",sub:"BST insert · search · inorder=sorted",topics:["BST properties: left<root<right","Insert in BST","Search in BST","Delete in BST (3 cases)","Inorder traversal = sorted array","Find min & max in BST","LeetCode: validate BST (#98)"]}
+  ]},
+  {focus:"Node.js deep dive + Java File I/O + Hashing",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · goals",topics:["Morning freshen","Breakfast","Set 3 goals for today"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — SI & CI",sub:"Interest formulas · difference",topics:["Simple interest formula: P×R×T/100","Compound interest formula","SI vs CI difference formula","Doubling time problem","Practice 8 Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — File I/O",sub:"FileReader · BufferedReader · try-with-resources",topics:["FileReader & FileWriter","BufferedReader for efficiency","try-with-resources (auto-close)","Read text file line by line","Write & append to file","Practice: read CSV, print formatted"]},
+    {time:"12–15",cat:"dev",title:"Node.js — deep dive",sub:"Modules · fs · streams · Express middleware",topics:["CommonJS vs ES modules","fs module: read, write, append, delete","path module","Events: EventEmitter pattern","Streams: readable, writable, pipe","Express middleware chain","Error-handling middleware","Build REST API with validation (Joi/Zod)"]},
+    {time:"15–16",cat:"dev",title:"Break + test API",sub:"Postman tests + error middleware",topics:["Test all routes in Postman","Add error-handling middleware","Return proper status codes"]},
+    {time:"16–19",cat:"placement",title:"Placement — boats, trains & mock",sub:"Relative speed · 45-min mock",topics:["Boats & streams: upstream/downstream","Trains: crossing problems","45-min aptitude mock","Review mistakes","3 HackerRank Qs"]},
+    {time:"19–22",cat:"dsa",title:"DSA — hashing",sub:"HashMap internals · collision · problems",topics:["Hash table concept & use cases","Java HashMap internal: buckets, load factor","Collision handling: chaining vs open addressing","hashCode() & equals()","Frequency count pattern","Two sum using HashMap","LeetCode: 3 easy-medium hash Qs"]}
+  ]},
+  {focus:"MongoDB advanced + Java Lambda + Heaps",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · stretch · Node.js quiz",topics:["Freshen & breakfast","Quick Node.js quiz","Stretch 5 min","Plan the day"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — boats & trains",sub:"Upstream · downstream · crossing",topics:["Boat speed formulas","Stream problems","Train crossing: length/speed","Multiple train scenarios","Practice 6 Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — lambda & Stream API",sub:"Lambda · filter · map · collect",topics:["Lambda expressions syntax","Functional interfaces: Predicate, Function, Consumer","Stream API: filter(), map(), collect()","Method references","sorted(), distinct(), limit()","Practice: filter students by grade with streams"]},
+    {time:"12–15",cat:"dev",title:"MongoDB advanced + Mongoose",sub:"Schema design · aggregation · indexes",topics:["Schema design best practices","Mongoose validation rules","populate() for joins","Aggregation pipeline: $match, $group, $sort, $project","$lookup for SQL-style joins","Indexes: single, compound, text","explain() for query analysis","Build Blog REST API (posts, comments, users)"]},
+    {time:"15–16",cat:"dev",title:"Break + blog API debug",sub:"Fix bugs + add pagination",topics:["Debug Blog API","Add pagination with skip/limit","Add search by title"]},
+    {time:"16–19",cat:"placement",title:"Placement — GenAI deep dive",sub:"ML pipeline · GD simulation",topics:["AI/ML pipeline: data → model → deploy","GD simulation: topic discussion","AI ethics overview","What companies expect re: GenAI","4 HackerRank Qs"]},
+    {time:"19–22",cat:"dsa",title:"DSA — heaps & priority queue",sub:"Min/max heap · heapsort · K-th largest",topics:["Min-heap vs max-heap","Heap operations: insert O(log n), extractMin O(log n)","Heapify & heapsort","Java PriorityQueue","K-th largest element problem","Top K frequent elements","LeetCode: 2 heap Qs"]}
+  ]},
+  {focus:"Auth JWT + Python OOP + Graph representation",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · meditation · weekly review",topics:["Morning freshen","Meditation 5 min","Review all of this week so far"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — calculus basics",sub:"Derivatives · partial derivatives · gradient",topics:["Functions & limits (concept)","Derivative rules: power, chain, product","Partial derivatives","Gradient = vector of partials","Why gradient descent uses derivatives","Practice: differentiate simple functions"]},
+    {time:"11–12",cat:"apt",title:"Python — functions & OOP",sub:"def · *args · classes · dunder methods",topics:["def, return, default args","*args & **kwargs","Python OOP: class, self, __init__","Inheritance in Python","Dunder methods: __str__, __repr__, __len__","Practice: Shape class hierarchy"]},
+    {time:"12–15",cat:"dev",title:"Authentication — JWT + bcrypt",sub:"Register · login · protected routes",topics:["bcrypt password hashing rounds","JWT structure: header.payload.signature","jsonwebtoken: sign & verify","User registration & login endpoints","Auth middleware (protect routes)","Refresh token concept","Full auth flow: register → login → access protected route"]},
+    {time:"15–16",cat:"dev",title:"Break + test auth",sub:"Postman auth tests + token expiry",topics:["Test register & login in Postman","Test protected route with & without token","Handle token expiry scenario"]},
+    {time:"16–19",cat:"placement",title:"Placement — mock interview + resume",sub:"30-min mock · resume polish",topics:["30-min mock technical interview (record)","Resume review: ATS optimization","Add projects section to resume","HackerRank: 5 Qs"]},
+    {time:"19–22",cat:"dsa",title:"DSA — graph representation",sub:"Adjacency matrix/list · BFS · DFS",topics:["Graph terminology: vertex, edge, directed, undirected","Adjacency matrix representation","Adjacency list representation","BFS implementation (queue-based)","DFS implementation (recursive & iterative)","Connected components","LeetCode: number of islands (#200)"]}
+  ]},
+  {focus:"Redux + ML probability + Graph algorithms",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · weekly journal",topics:["Freshen & breakfast","Weekly journal: wins & gaps","Plan Saturday goals"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — probability distributions",sub:"Binomial · Poisson · Normal",topics:["Random variables: discrete vs continuous","Binomial distribution: P(X=k) formula","Poisson distribution concept","Normal distribution: 68-95-99.7 rule","Expected value E(X)","Standard normal Z-score"]},
+    {time:"11–12",cat:"apt",title:"Java — design patterns intro",sub:"Singleton · Factory · Observer",topics:["Why design patterns?","Singleton: thread-safe implementation","Factory method pattern","Observer pattern","Strategy pattern","Code example for each"]},
+    {time:"12–15",cat:"dev",title:"Redux + state management",sub:"Store · actions · reducers · Redux Toolkit",topics:["Redux core: store, action, reducer","Redux Toolkit: createSlice, configureStore","useSelector & useDispatch hooks","Async thunks: createAsyncThunk","RTK Query for data fetching","Refactor todo app with Redux"]},
+    {time:"15–16",cat:"dev",title:"Break + connect Redux",sub:"Add Redux to existing app",topics:["Connect Redux to existing React app","Test all state flows","Add loading & error states"]},
+    {time:"16–19",cat:"placement",title:"Placement — full 60-min mock + LinkedIn",sub:"Full mock · LinkedIn update · Kaggle",topics:["Full 60-min placement mock","LinkedIn: update headline, skills, projects","Kaggle: explore a beginner dataset","3 HackerRank Qs"]},
+    {time:"19–22",cat:"dsa",title:"DSA — graph algorithms",sub:"Dijkstra · topological sort · cycle detection",topics:["Dijkstra's shortest path (min-heap based)","Topological sort: DFS-based & Kahn's BFS","Cycle detection in directed graph","Cycle detection in undirected graph","LeetCode: Course schedule (#207)","LeetCode: Course schedule II"]}
+  ]},
+  {focus:"Full-stack project sprint + Week 2 revision",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Relaxed · plan week 3",topics:["Relaxed breakfast","15-min walk","Plan Week 3 goals","Update progress tracker"]},
+    {time:"9–11",cat:"apt",title:"Week 2 aptitude revision",sub:"Mixed 15-Q test · fix weak areas",topics:["Revise all Week 2 aptitude topics","Mixed 15-question timed test","Analyze every wrong answer","Update error notebook"]},
+    {time:"11–12",cat:"apt",title:"Python — file handling & modules",sub:"open · json · csv · os module",topics:["open(): read, write, append, close","with statement (context manager)","json module: load, dump","csv module: reader, writer, DictReader","os module: path, listdir, makedirs","shutil module: copy, move"]},
+    {time:"12–15",cat:"dev",title:"Full-stack project sprint",sub:"Task manager: React + Node + MongoDB + Auth",topics:["Plan: task manager app architecture","Backend: Express + JWT + MongoDB","Tasks CRUD API (CRUD + user-specific)","Frontend: React + Redux","Connect frontend to backend","Add auth: login/register UI","Deploy: Render (backend) + Vercel (frontend)"]},
+    {time:"15–16",cat:"dev",title:"Break + deploy",sub:"Full production deploy",topics:["Deploy backend to Render.com","Deploy frontend to Vercel","Set environment variables","Test production app"]},
+    {time:"16–19",cat:"placement",title:"Placement — project presentation prep",sub:"2-min pitch · mock Q&A",topics:["Practice 2-min project explanation","Mock Q&A on your task manager project","Add project to resume & GitHub profile","Polish GitHub README with screenshots"]},
+    {time:"19–22",cat:"dsa",title:"Week 2 DSA full revision",sub:"Trees · Heaps · Graphs · 5 LeetCode",topics:["Revise: BST, Heap, Graph algorithms","Solve 5 mixed LeetCode Qs","Track solved count in spreadsheet","Identify 2 weak DSA topics for next week"]}
+  ]}
+]},
+
+{phase:"Phase 1 — Foundations",theme:"TypeScript · Spring Boot · Dynamic Programming · ML Basics",days:[
+  {focus:"TypeScript fundamentals + Spring Boot intro + DP basics",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · stretch · plan",topics:["Morning freshen & breakfast","5-min stretch","Review last week summary","Set weekly targets"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — pipes & cisterns + mensuration",sub:"Fill/empty · areas · volumes",topics:["Pipe filling/emptying formulas","Both together formula","Area: circle, triangle, rectangle, trapezoid","Volume: cube, cuboid, cylinder","Practice 8 Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — JDBC + database connection",sub:"JDBC · PreparedStatement · SQL injection",topics:["JDBC setup: add driver dependency","Connection, Statement, ResultSet","CRUD with MySQL/H2 via JDBC","PreparedStatement: parameterized queries","SQL injection prevention","Practice: student DB CRUD via JDBC"]},
+    {time:"12–15",cat:"dev",title:"TypeScript fundamentals",sub:"Types · interfaces · generics · enums",topics:["TypeScript vs JavaScript: why TS?","Basic types: string, number, boolean, any, unknown, never","Type inference","Interfaces vs type aliases","Enums","Generics: <T>","Union & intersection types","Functions with typed params & return","Convert a JS file to TS","tsconfig.json settings"]},
+    {time:"15–16",cat:"dev",title:"Break + TS practice",sub:"Type-annotate React components",topics:["Type-annotate previous React components","Fix all TypeScript errors","Use strict mode in tsconfig"]},
+    {time:"16–19",cat:"placement",title:"Placement — technical interview prep",sub:"OOP Qs · Java Qs · project explanation",topics:["Top 20 OOP interview questions","Java: output-based interview Qs","Explain your Task Manager project clearly","5 HackerRank Qs"]},
+    {time:"19–22",cat:"dsa",title:"DSA — dynamic programming intro",sub:"Memoization · tabulation · Fibonacci",topics:["What is DP: overlapping subproblems + optimal substructure","Memoization (top-down)","Tabulation (bottom-up)","Fibonacci: recursive → memoized → tabulated","Climbing stairs problem","Coin change problem (min coins)","LeetCode: 2 easy DP Qs"]}
+  ]},
+  {focus:"React + TypeScript + DP subsequence + ML regression math",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · journal",topics:["Freshen & breakfast","Journal: progress check","Review Mon notes"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — geometry & trig basics",sub:"Pythagoras · sin/cos/tan",topics:["Lines & angles","Triangle properties & Pythagoras","Trigonometric ratios: sin, cos, tan","sin²+cos²=1 identity","Heights & distances problems","Practice 6 Qs"]},
+    {time:"11–12",cat:"apt",title:"Python — virtual env & Jupyter",sub:"venv · pip · requirements · Jupyter",topics:["python -m venv setup","pip install / freeze / requirements.txt","Activate/deactivate venv","Jupyter Notebook: cells, markdown, run","Explore dataset in Jupyter","Practice: load Titanic dataset"]},
+    {time:"12–15",cat:"dev",title:"React with TypeScript",sub:"Typed props · events · hooks · API types",topics:["Create Vite + React + TS project","Typed props with interface","Typed useState & useEffect","Event types: React.ChangeEvent, React.MouseEvent","useRef with generics","Custom hooks with TypeScript","Type API responses with interfaces","Typed form handling"]},
+    {time:"15–16",cat:"dev",title:"Break + convert todo to TS",sub:"Full TypeScript todo app",topics:["Convert JS todo app to TypeScript","Type all props, state, handlers","Use strict TypeScript"]},
+    {time:"16–19",cat:"placement",title:"Placement — quant deep drill",sub:"LCM/HCF · number theory",topics:["LCM & HCF methods","Number theory: divisibility rules","Remainder theorem","Practice 8 Qs","4 HackerRank Qs"]},
+    {time:"19–22",cat:"dsa",title:"DSA — DP subsequence problems",sub:"LCS · LIS · edit distance",topics:["Longest Common Subsequence (LCS)","LCS: tabulation solution","Longest Increasing Subsequence (LIS)","Edit distance / Levenshtein","0/1 Knapsack problem","LeetCode: 2 medium DP Qs"]}
+  ]},
+  {focus:"Next.js + Spring Boot CRUD + Greedy algorithms",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · goals",topics:["Freshen & breakfast","Set clear coding goal for today","5-min stretch"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — linear regression math",sub:"Cost function · gradient descent derivation",topics:["Hypothesis function h(x)","Cost function J(θ): MSE","Gradient descent update rule","Learning rate α effects","Vectorized form: X·θ","Normal equation: θ=(XᵀX)⁻¹Xᵀy"]},
+    {time:"11–12",cat:"apt",title:"Java — Spring Boot intro",sub:"@SpringBootApplication · REST controller",topics:["Spring Boot: convention over configuration","Spring Initializr setup","@SpringBootApplication","@RestController, @GetMapping, @PostMapping","@RequestBody, @PathVariable, @RequestParam","Run first Spring Boot REST API","Test with Postman"]},
+    {time:"12–15",cat:"dev",title:"Next.js fundamentals",sub:"File routing · SSR · SSG · API routes",topics:["Next.js vs React SPA","Pages router & App router (Next 13+)","File-based routing: pages/about.jsx","getServerSideProps (SSR)","getStaticProps + getStaticPaths (SSG)","API routes: pages/api/hello.js","next/image optimization","next/head for SEO","next/link for client-side nav","Build portfolio site with Next.js"]},
+    {time:"15–16",cat:"dev",title:"Break + deploy to Vercel",sub:"Next.js Vercel deploy",topics:["Deploy Next.js to Vercel","Custom domain setup","Check Lighthouse score"]},
+    {time:"16–19",cat:"placement",title:"Placement — HR & soft skills",sub:"Tell me about yourself · STAR",topics:["Tell me about yourself (craft your answer)","Strengths & weaknesses prep","Situational Qs: STAR method","Communication tips for tech interviews","3 HackerRank Qs"]},
+    {time:"19–22",cat:"dsa",title:"DSA — greedy algorithms",sub:"Activity selection · fractional knapsack · MST",topics:["Greedy paradigm: make locally optimal choice","Activity selection problem","Fractional knapsack","Huffman encoding concept","Minimum spanning tree: Kruskal's algorithm","Prim's algorithm concept","LeetCode: 3 greedy Qs"]}
+  ]},
+  {focus:"Testing + Java Spring CRUD + Backtracking",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · stretch · TS quiz",topics:["Freshen & breakfast","Quick TS types quiz","5-min stretch","Plan today"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — directions & blood relations",sub:"Compass sense · family tree",topics:["Direction sense: N/S/E/W, diagonals","Distance & direction calculation","Blood relation: family tree building","Coded blood relations","Practice 8 Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — Spring Boot CRUD API",sub:"JPA · @Entity · H2/MySQL · full CRUD",topics:["Spring Data JPA: auto-generated queries","@Entity, @Id, @GeneratedValue","@Repository extends JpaRepository","@Service layer pattern","Full CRUD: GET/POST/PUT/DELETE","H2 in-memory DB for testing","Switch to MySQL for production"]},
+    {time:"12–15",cat:"dev",title:"Testing fundamentals",sub:"Jest · React Testing Library · unit tests",topics:["Why testing: unit vs integration vs E2E","Jest setup in React+TS project","describe(), it(), expect() pattern","React Testing Library: render, screen, fireEvent","Testing: what renders on screen","Testing: button clicks & state changes","Mocking API calls with jest.mock()","Test coverage report"]},
+    {time:"15–16",cat:"dev",title:"Break + write tests",sub:"Test todo app components",topics:["Write 5 unit tests for todo app","Fix any component issues found","Aim for 70% test coverage"]},
+    {time:"16–19",cat:"placement",title:"Placement — mock coding interview easy",sub:"30-min live coding simulation",topics:["30-min live coding: arrays & strings Qs","Explain approach step by step","Optimize after first solution","5 HackerRank Qs"]},
+    {time:"19–22",cat:"dsa",title:"DSA — backtracking",sub:"N-Queens · permutations · subsets",topics:["Backtracking paradigm: try → fail → backtrack","N-Queens problem","Generate all permutations","Generate all subsets (power set)","Combination sum problem","Sudoku solver concept","LeetCode: 2 backtracking Qs"]}
+  ]},
+  {focus:"WebSockets + Python scikit-learn + Tries",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · meditation",topics:["Morning freshen","5-min meditation","Review week notes so far"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — logistic regression math",sub:"Sigmoid · cross-entropy · decision boundary",topics:["Sigmoid function: σ(z) = 1/(1+e⁻ᶻ)","Binary cross-entropy loss","Log-likelihood maximization","Gradient of logistic loss","Decision boundary","Multi-class: softmax function"]},
+    {time:"11–12",cat:"apt",title:"Python — scikit-learn intro",sub:"train_test_split · models · metrics",topics:["Install scikit-learn","Load datasets: load_iris(), fetch_california_housing()","train_test_split: test_size, stratify","LinearRegression: fit, predict","LogisticRegression: fit, predict, predict_proba","Accuracy, MSE, R² score","Confusion matrix","Classification report"]},
+    {time:"12–15",cat:"dev",title:"WebSockets + real-time chat",sub:"Socket.io · rooms · namespaces",topics:["HTTP polling vs WebSockets","Socket.io: server setup","emit() and on() events","Broadcasting: io.emit vs socket.broadcast","Rooms & namespaces","Build real-time chat app (React + Node + Socket.io)","Add: usernames, message timestamps, online status","User joins/leaves events"]},
+    {time:"15–16",cat:"dev",title:"Break + chat app polish",sub:"Polish chat · deploy",topics:["Polish chat UI","Add typing indicator","Deploy chat app to Render"]},
+    {time:"16–19",cat:"placement",title:"Placement — system design intro",sub:"Scalability · load balancer · CDN",topics:["System design: why it matters for placement","Scalability: vertical vs horizontal","Load balancer: round-robin, least connections","CDN concept","Caching: Redis, Memcached","4 HackerRank Qs"]},
+    {time:"19–22",cat:"dsa",title:"DSA — Trie data structure",sub:"Insert · search · autocomplete",topics:["Trie (prefix tree) concept","TrieNode structure in Java","Insert word in Trie","Search word in Trie","StartsWith (prefix search)","Count words with prefix","Autocomplete application","LeetCode: implement Trie (#208)"]}
+  ]},
+  {focus:"Docker + Java Spring Security + Segment trees",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · weekly journal",topics:["Freshen & breakfast","Weekly journal: wins & gaps","Check progress tracker"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — decision tree math",sub:"Entropy · information gain · Gini",topics:["Entropy formula: H = -Σ p·log₂p","Information gain: IG = H(parent) - Σ H(children)","Gini impurity: 1 - Σ pᵢ²","Which feature to split on?","Overfitting in trees: pruning","Practice: compute IG by hand"]},
+    {time:"11–12",cat:"apt",title:"Java — Spring Security basics",sub:"HTTP auth · JWT with Spring · roles",topics:["Spring Security filter chain","HTTP basic auth setup","UserDetailsService interface","PasswordEncoder: BCrypt","JWT integration with Spring Security","Role-based access: @PreAuthorize"]},
+    {time:"12–15",cat:"dev",title:"Docker fundamentals",sub:"Dockerfile · docker-compose · containerize MERN",topics:["Container vs VM","Docker daemon, image, container","Dockerfile: FROM, RUN, COPY, EXPOSE, CMD","docker build -t, docker run -p","docker ps, stop, rm, rmi","Docker Compose: multi-service app","Containerize Node.js + React + MongoDB",".env with Docker","Volumes for data persistence"]},
+    {time:"15–16",cat:"dev",title:"Break + Docker debug",sub:"Fix networking + test containers",topics:["Fix Docker network issues","Test containerized MERN app","Push image to Docker Hub"]},
+    {time:"16–19",cat:"placement",title:"Placement — full mock + portfolio",sub:"60-min mock · portfolio review",topics:["60-min full placement mock","Review all portfolio projects","Add Docker badge to GitHub repos","4 HackerRank Qs"]},
+    {time:"19–22",cat:"dsa",title:"DSA — segment trees & BIT",sub:"Range query · point update · Fenwick tree",topics:["Segment tree concept: range min/max/sum","Build segment tree","Range query O(log n)","Point update O(log n)","Lazy propagation concept","Binary Indexed Tree (Fenwick tree)","BIT: point update, prefix sum query","LeetCode: range sum query (#307)"]}
+  ]},
+  {focus:"Phase 1 capstone project + deploy + full revision",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Relaxed · plan Week 4",topics:["Relaxed breakfast","Light 15-min walk","Plan Week 4 goals","Check: what's left to revise?"]},
+    {time:"9–11",cat:"apt",title:"Phase 1 aptitude revision",sub:"All topics · 20-Q test",topics:["Revise all Phase 1 aptitude topics","20-question mixed timed test","Analyze performance","Update error notebook"]},
+    {time:"11–12",cat:"apt",title:"Python — logistic regression project",sub:"Titanic · feature engineering · ROC",topics:["Load Titanic dataset","Feature engineering: fillna, encode categorical","Train logistic regression","Confusion matrix & classification report","ROC curve & AUC score","Visualize with matplotlib"]},
+    {time:"12–15",cat:"dev",title:"Phase 1 full-stack capstone",sub:"E-commerce: Next.js + Node + MongoDB + Auth",topics:["Build: e-commerce product listing","Next.js frontend: product grid, detail page","Cart functionality with Redux","Node.js + MongoDB: products, cart APIs","JWT authentication","Stripe payment intent (test mode)","Full deployment: Vercel + Render + Atlas"]},
+    {time:"15–16",cat:"dev",title:"Break + deploy fully",sub:"Production deploy all services",topics:["Deploy all services","Set all env variables","Smoke test the whole app","Write project README with demo link"]},
+    {time:"16–19",cat:"placement",title:"Phase 1 career review",sub:"Resume · GitHub · LinkedIn · 5 Qs",topics:["Finalize resume with all 3+ projects","GitHub: clean repos, add READMEs","LinkedIn: update all sections","Mock HR interview (record)","5 HackerRank Qs"]},
+    {time:"19–22",cat:"dsa",title:"Phase 1 DSA full revision",sub:"All topics · 6 LeetCode · count problems",topics:["Full revision: Arrays→Sorting→Trees→Graphs→DP","Solve 6 mixed LeetCode Qs","Record total LeetCode count","Set Phase 2 target: 150+ total"]}
+  ]}
+]},
+
+{phase:"Phase 2 — Intermediate",theme:"Advanced React · Microservices · ML Models · Hard DSA",days:[
+  {focus:"React Query + Java Spring advanced + Hard DP",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · Month 2 goals",topics:["Freshen & breakfast","Set Month 2 goals","Review Phase 1 summary"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — advanced logical reasoning",sub:"Circular seating · input-output machine",topics:["Circular arrangement problems","Input-output machine patterns","Statement-assumption Qs","Statement-conclusion Qs","Practice 10 Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — Spring Boot JWT auth full",sub:"Refresh tokens · role-based access",topics:["Refresh token flow","Token revocation strategy","Role-based: USER vs ADMIN","@PreAuthorize('hasRole(\"ADMIN\")')","Password reset with email token","Spring Mail for OTP"]},
+    {time:"12–15",cat:"dev",title:"React Query (TanStack Query)",sub:"Queries · mutations · infinite scroll · optimistic",topics:["Why React Query vs Redux for server state","useQuery: queryKey, queryFn, staleTime","useMutation: mutationFn, onSuccess","Query invalidation after mutation","Infinite scroll: useInfiniteQuery","Optimistic updates","DevTools setup","Migrate Blog app to React Query"]},
+    {time:"15–16",cat:"dev",title:"Break + migrate",sub:"Migrate blog to React Query",topics:["Replace Axios hooks with React Query","Handle loading & error states","Test all CRUD operations"]},
+    {time:"16–19",cat:"placement",title:"Placement — TCS NQT mock",sub:"Full NQT pattern: verbal+reasoning+quant+coding",topics:["TCS NQT: 90-min full mock","Verbal: RC + grammar","Reasoning: coding, blood relations","Quant: DI + arithmetic","Coding: 2 problems","Detailed review"]},
+    {time:"19–22",cat:"dsa",title:"DSA — hard DP",sub:"Burst balloons · regex match · interleaving",topics:["Burst balloons (LeetCode #312)","Regular expression matching (#10)","Wildcard matching (#44)","Interleaving string (#97)","Approach: think recursively, then memoize","LeetCode Hard: 2 problems solved & understood"]}
+  ]},
+  {focus:"Redis + Random Forest + Advanced tree problems",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · journal",topics:["Freshen & breakfast","Journal: 3 wins, 1 gap","Review Mon notes"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — ensemble methods",sub:"Bagging · boosting · bias-variance",topics:["Bagging: bootstrap aggregation","Random forest: feature randomness","Boosting: AdaBoost concept","XGBoost: gradient boosting","Bias-variance tradeoff math","Regularization: L1, L2"]},
+    {time:"11–12",cat:"apt",title:"Python — Random Forest & XGBoost",sub:"House price dataset · GridSearchCV",topics:["Load California housing dataset","Train Random Forest: n_estimators, max_depth","Feature importance plot","Train XGBoost: xgb.XGBRegressor","GridSearchCV for hyperparameter tuning","Cross-validation: cv=5","Compare models by RMSE"]},
+    {time:"12–15",cat:"dev",title:"Redis — caching & sessions",sub:"Data structures · node-redis · rate limiting",topics:["Redis data structures: string, list, hash, set, sorted set","node-redis client setup","Cache API response: SET with EX (TTL)","Cache invalidation strategy","Session storage with Redis","Rate limiting: sliding window in Redis","Bull queue for background jobs"]},
+    {time:"15–16",cat:"dev",title:"Break + add Redis cache",sub:"Cache blog API responses",topics:["Add Redis caching to Blog API","Test cache hit vs miss","Add cache invalidation on update"]},
+    {time:"16–19",cat:"placement",title:"Placement — Infosys InfyTQ mock",sub:"Python/Java MCQs · coding",topics:["Infosys InfyTQ pattern mock","Python & Java MCQs section","Coding: 2 medium Qs","Review all mistakes","Update error notebook"]},
+    {time:"19–22",cat:"dsa",title:"DSA — advanced tree problems",sub:"LCA · diameter · max path sum",topics:["Lowest Common Ancestor (LCA)","Binary tree diameter","Maximum path sum in binary tree (#124)","Serialize & deserialize binary tree (#297)","Binary tree from inorder & preorder","LeetCode Hard: 3 tree problems"]}
+  ]},
+  {focus:"Kubernetes + K-means ML + Graph advanced",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · goals",topics:["Freshen & breakfast","Set 3 clear coding goals","Plan the day"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — clustering math",sub:"K-means · elbow · silhouette",topics:["K-means: centroid update rule","Objective: minimize intra-cluster variance","Elbow method: plot inertia vs K","Silhouette coefficient formula","DBSCAN concept: epsilon, min_samples","Dimensionality reduction: PCA concept"]},
+    {time:"11–12",cat:"apt",title:"Java — Reactive (WebFlux concept)",sub:"Mono · Flux · non-blocking I/O",topics:["Reactive streams spec","Mono<T> vs Flux<T>","Spring WebFlux: @Controller vs @RestController","Router functions","Non-blocking database with R2DBC concept","When to use reactive vs imperative"]},
+    {time:"12–15",cat:"dev",title:"Kubernetes basics",sub:"Pod · Deployment · Service · kubectl",topics:["Container orchestration: why K8s?","K8s components: cluster, node, pod","Deployment: replicas, rolling update","Service: ClusterIP, NodePort, LoadBalancer","Ingress controller","ConfigMap & Secret","kubectl: apply, get, describe, logs, exec","Deploy MERN app to Minikube","Horizontal Pod Autoscaler concept"]},
+    {time:"15–16",cat:"dev",title:"Break + K8s debug",sub:"Fix pod crashes + logs",topics:["Debug CrashLoopBackOff pod","Check logs: kubectl logs","Fix service selector mismatch"]},
+    {time:"16–19",cat:"placement",title:"Placement — Wipro NLTH mock",sub:"Aptitude + English + coding",topics:["Wipro NLTH 90-min mock","Section 1: Aptitude","Section 2: English","Section 3: Written communication","Coding: 2 problems","Detailed review"]},
+    {time:"19–22",cat:"dsa",title:"DSA — network flow & bipartite",sub:"Max flow · bipartite · graph coloring",topics:["Max flow concept: Ford-Fulkerson","Bipartite graph: 2-coloring check","Graph coloring: chromatic number concept","LeetCode: Is graph bipartite? (#785)","LeetCode: 3 advanced graph Qs","Network flow applications"]}
+  ]},
+  {focus:"AWS + CNN deep learning + Monotonic stack",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · stretch · review",topics:["Freshen & breakfast","10-min stretch","Review all this week's notes"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — timed test 40 Qs",sub:"All Phase 2 topics · strict timer",topics:["40 questions in 40 minutes","All Phase 2 aptitude topics","Strict timer: no pausing","Score & analyze every mistake","Target: 80%+"]},
+    {time:"11–12",cat:"apt",title:"Python — CNNs with Keras",sub:"Conv2D · pooling · CIFAR-10",topics:["Load CIFAR-10 dataset","Build CNN: Conv2D, MaxPooling2D","Batch normalization layer","Dropout for regularization","Compile: Adam, categorical_crossentropy","Train & evaluate (accuracy ~70%+)","Plot training curves"]},
+    {time:"12–15",cat:"dev",title:"AWS basics",sub:"EC2 · S3 · RDS · Lambda · deploy MERN",topics:["AWS free tier setup","EC2: launch instance, SSH, security group","Deploy Node.js to EC2 with PM2","S3: bucket, upload, ACL, presigned URLs","RDS: PostgreSQL instance setup","Lambda: create function, trigger","API Gateway + Lambda integration","Environment variables with SSM Parameter Store","Route 53: DNS setup","Deploy full MERN app to AWS"]},
+    {time:"15–16",cat:"dev",title:"Break + AWS deploy",sub:"MERN on EC2 + S3",topics:["Configure Nginx on EC2","Set up SSL with Certbot","Store uploads to S3"]},
+    {time:"16–19",cat:"placement",title:"Placement — Cognizant GenC mock",sub:"Aptitude + automata + coding",topics:["Cognizant GenC 90-min mock","Aptitude section","Automata fix (code debugging)","Coding: 2 problems","Review & fix weak areas"]},
+    {time:"19–22",cat:"dsa",title:"DSA — monotonic stack & deque",sub:"NGE · largest rectangle · sliding max",topics:["Monotonic stack concept","Next greater element (NGE)","Previous smaller element","Largest rectangle in histogram (#84)","Trapping rain water (#42)","Daily temperatures (#739)","Sliding window maximum (monotonic deque) (#239)","LeetCode: 4 Qs"]}
+  ]},
+  {focus:"Advanced TS patterns + Fine-tune BERT + Interval problems",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · meditation",topics:["Morning freshen","5-min meditation","Review notes from Mon–Thu"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — transformer math",sub:"Attention · multi-head · positional encoding",topics:["Query, Key, Value concept","Scaled dot-product: softmax(QKᵀ/√d)·V","Multi-head attention","Positional encoding: sin/cos formula","Why transformers beat RNNs","BERT vs GPT architecture differences"]},
+    {time:"11–12",cat:"apt",title:"Python — fine-tune BERT (HuggingFace)",sub:"Trainer API · tokenizer · F1 evaluation",topics:["Install transformers, datasets","Load bert-base-uncased","AutoTokenizer: encode dataset","DataCollatorWithPadding","TrainingArguments setup","Trainer.train()","Evaluate: F1, accuracy on test set","Save & load fine-tuned model"]},
+    {time:"12–15",cat:"dev",title:"Advanced TypeScript patterns",sub:"Conditional types · mapped types · utility types",topics:["Conditional types: T extends U ? X : Y","infer keyword","Mapped types: { [K in keyof T]: ... }","Template literal types","Utility types: Partial, Required, Pick, Omit, Record, Exclude, Extract","Declaration merging","Module augmentation","Type guard functions: is syntax","Discriminated unions"]},
+    {time:"15–16",cat:"dev",title:"Break + TS deep practice",sub:"Implement typed state machine",topics:["Implement a traffic light state machine in TS","Type all states & transitions","Add type tests with @ts-expect-error"]},
+    {time:"16–19",cat:"placement",title:"Placement — Accenture mock",sub:"Cognitive + technical + coding",topics:["Accenture mock: cognitive assessment","Technical: Java, DBMS MCQs","Coding: 1 medium + 1 easy","Behavioral section","Review all answers"]},
+    {time:"19–22",cat:"dsa",title:"DSA — interval problems",sub:"Merge intervals · meeting rooms · insert interval",topics:["Merge intervals (#56)","Insert interval (#57)","Non-overlapping intervals (#435)","Meeting rooms I & II","Minimum number of arrows","LeetCode: 4 interval Qs"]}
+  ]},
+  {focus:"Node.js clustering + RL basics + LeetCode sprint",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · weekly journal",topics:["Freshen & breakfast","Weekly journal: wins & gaps","Update progress tracker"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — reinforcement learning",sub:"MDP · Q-learning · Bellman equation",topics:["Markov Decision Process (MDP)","State, action, reward, policy","Value function V(s)","Q-value function Q(s,a)","Bellman optimality equation","Q-learning update rule","Epsilon-greedy exploration"]},
+    {time:"11–12",cat:"apt",title:"Python — simple RL agent (CartPole)",sub:"OpenAI Gym · Q-learning agent",topics:["Install gymnasium (gym)","CartPole-v1 environment","Random agent baseline","Implement Q-table agent","Train 500 episodes","Plot reward vs episode","Compare random vs trained"]},
+    {time:"12–15",cat:"dev",title:"Advanced Node.js — clustering",sub:"Worker threads · cluster · PM2 · Artillery",topics:["Node.js event loop & thread model","worker_threads: offload CPU tasks","cluster module: fork workers","PM2: cluster mode, auto-restart, monitoring","PM2 ecosystem.config.js","Load testing with Artillery","Read Artillery report","Identify bottlenecks","Fix: database query optimization"]},
+    {time:"15–16",cat:"dev",title:"Break + load test",sub:"Artillery test + fix bottleneck",topics:["Run Artillery load test on Blog API","Read p95, p99 latencies","Fix the slowest endpoint"]},
+    {time:"16–19",cat:"placement",title:"Placement — HCL & L&T mock",sub:"Company-specific 90-min mock",topics:["HCL pattern: aptitude + coding","L&T Infotech pattern","Mock: 90-min combined","Review weak areas","Update error notebook"]},
+    {time:"19–22",cat:"dsa",title:"DSA — LeetCode sprint + Week 5 revision",sub:"2-hour timed: 5 medium/hard Qs",topics:["2-hour timed LeetCode session","5 medium/hard problems","Mix of: DP, graph, tree, stack","Record time per problem","Review optimal solutions","Update weak tag list"]}
+  ]},
+  {focus:"Real-time dashboard project + GenAI RAG + Week 5 audit",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Relaxed · plan Week 6",topics:["Relaxed breakfast","15-min walk","Plan Week 6 goals","Update progress tracker"]},
+    {time:"9–11",cat:"apt",title:"Phase 2 aptitude deep revision",sub:"All Phase 2 topics · 20 hard Qs",topics:["Revise all Phase 2 aptitude topics","20 hard question timed test","Update error notebook","Target: 85%+"]},
+    {time:"11–12",cat:"apt",title:"GenAI — RAG systems",sub:"Vector DB · embeddings · Q&A bot",topics:["What is RAG: retrieval augmented generation","Embedding models: sentence-transformers","Vector database: ChromaDB / Pinecone","Chunking strategies","Retrieval: cosine similarity search","Augment LLM prompt with retrieved context","Build: document Q&A bot (PDF input)"]},
+    {time:"12–15",cat:"dev",title:"Project — real-time analytics dashboard",sub:"React + Socket.io + Redis + Node",topics:["Plan: real-time dashboard architecture","Backend: Node + Socket.io + Redis pub/sub","Live metrics: user count, events/sec","Frontend: React + Recharts","Real-time chart updates via WebSocket","Store hourly aggregates in Redis","Add date range filter","Full deploy to AWS/Render"]},
+    {time:"15–16",cat:"dev",title:"Break + deploy + share",sub:"Deploy dashboard + LinkedIn post",topics:["Full deploy dashboard","Write LinkedIn post with demo GIF","Get 5 GitHub stars target"]},
+    {time:"16–19",cat:"placement",title:"Placement — project deep dive",sub:"STAR answers · explain all projects",topics:["Prepare to explain all 5+ projects clearly","STAR answers for behavioral Qs","Practice technical Q&A on each project","Update all social profiles"]},
+    {time:"19–22",cat:"dsa",title:"Week 5 full DSA test",sub:"3-hour: 8 LeetCode Qs mixed",topics:["3-hour self-timed test","2 Easy + 4 Medium + 2 Hard","Analyse time per problem","Review editorial for each","Plan Week 6 DSA focus"]}
+  ]}
+]},
+
+{phase:"Phase 2 — Advanced",theme:"Full-Stack Architecture · GenAI Projects · LeetCode Hard Sprint",days:[
+  {focus:"Event-driven architecture + JVM internals + LeetCode Hard Day 1",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · stretch · Week 6 goals",topics:["Freshen & breakfast","Stretch 5 min","Set Week 6 goals","Review Phase 2 so far"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — advanced verbal + RC",sub:"Long RC · para-jumbles · inference",topics:["Long RC passage (5 Qs)","Inference vs stated fact","5-sentence para-jumble set","Fill in the blanks (vocabulary-based)","Critical reasoning Qs","Practice 10 Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — JVM internals & GC",sub:"Heap/stack · GC algorithms · memory leaks",topics:["JVM memory: heap, stack, metaspace, code cache","Young gen, old gen, survivor space","GC algorithms: Serial, Parallel, G1, ZGC","GC tuning: -Xmx, -Xms, -XX flags","Memory leak identification","JProfiler / VisualVM overview","Practice: trigger & monitor GC"]},
+    {time:"12–15",cat:"dev",title:"Event-driven architecture",sub:"Event sourcing · CQRS · RabbitMQ · Saga",topics:["Event sourcing concept","CQRS: command vs query side","Message queues: why RabbitMQ?","amqplib Node.js client","Exchange types: direct, fanout, topic","Dead letter queue (DLQ)","Saga pattern for distributed transactions","Build: order processing system with events","Publisher → Queue → Consumer flow"]},
+    {time:"15–16",cat:"dev",title:"Break + test event flow",sub:"End-to-end event test + DLQ",topics:["Test publisher to consumer flow","Simulate consumer failure → DLQ","Add retry logic"]},
+    {time:"16–19",cat:"placement",title:"Placement — Amazon SDE mock",sub:"LP principles · coding · system design",topics:["Amazon LP: Customer Obsession, Ownership, Invent & Simplify","Coding: 2 medium-hard Qs (trees + DP)","System design: design Amazon search","Behavioral: STAR stories for each LP"]},
+    {time:"19–22",cat:"dsa",title:"LeetCode Hard sprint — Day 1",sub:"4 Hard Qs: DP + graphs · no hints 20 min",topics:["3 hours dedicated LeetCode Hard","Focus: DP + Graph problems","No hints for first 20 min per Qs","Attempt 4 problems","Review editorial after each","Note optimal approach"]}
+  ]},
+  {focus:"AI writing assistant + LangChain + LeetCode Hard Day 2",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · journal",topics:["Freshen & breakfast","Journal: progress","Review Mon"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — advanced probability",sub:"Conditional · Bayes · geometric",topics:["Conditional probability P(A|B)","Bayes theorem applications","Geometric probability","Inclusion-exclusion principle","Practice 8 Qs"]},
+    {time:"11–12",cat:"apt",title:"Python — LangChain fundamentals",sub:"LLMChain · PromptTemplate · Memory · Agents",topics:["LangChain: chains, agents, memory","LLMChain: prompt + LLM","PromptTemplate: variables","ConversationBufferMemory","Tools: web search, calculator","Agent with tools","Practice: build a simple chain"]},
+    {time:"12–15",cat:"dev",title:"GenAI project 1 — AI writing assistant",sub:"React + Node + OpenAI + MongoDB streaming",topics:["Plan: AI writing assistant architecture","Backend: Node + Express + OpenAI API","Streaming responses: SSE/WebSocket","Prompt templates: blog, email, code, essay","Frontend: React + TipTap editor","Save documents to MongoDB","Export to Markdown/PDF","Add rate limiting per user","Full deploy to Vercel + Render"]},
+    {time:"15–16",cat:"dev",title:"Break + polish",sub:"Markdown preview + rate limiting",topics:["Add markdown preview panel","Add PDF export with jsPDF","Implement rate limiting middleware"]},
+    {time:"16–19",cat:"placement",title:"Placement — Google SDE mock",sub:"2 hard Qs + system design YouTube",topics:["Google-style: strict 45-min coding","2 Hard LeetCode Qs","System design: Design YouTube","Draw full architecture diagram","Behavioral: why Google?"]},
+    {time:"19–22",cat:"dsa",title:"LeetCode Hard sprint — Day 2",sub:"4 Hard Qs: strings + binary search",topics:["3 hours LeetCode Hard","Focus: String algorithms + Binary search on answer","4 problems","Optimize all solutions","Compare with editorial"]}
+  ]},
+  {focus:"Cypress E2E + ML pipeline MLflow + LeetCode Hard Day 3",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · goals",topics:["Freshen & breakfast","Set coding goal for today","Review Week 6 plan"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — optimization theory",sub:"SGD · Adam · learning rate schedulers",topics:["SGD vs mini-batch GD vs batch GD","Adam: momentum + RMSProp combined","Learning rate schedulers: step, cosine, warmup","Weight initialization: Xavier, He","Gradient clipping","Batch normalization math"]},
+    {time:"11–12",cat:"apt",title:"Python — MLflow experiment tracking",sub:"Log params/metrics · model registry · serve",topics:["MLflow setup: mlflow.start_run()","Log parameters: mlflow.log_param()","Log metrics: mlflow.log_metric()","Log model: mlflow.sklearn.log_model()","Model registry: register, stage, deploy","Compare runs in MLflow UI","Serve model: mlflow models serve","Practice: track 3 models, compare"]},
+    {time:"12–15",cat:"dev",title:"Cypress E2E testing",sub:"Visit · intercept · custom commands · CI",topics:["Cypress setup in MERN project","cy.visit(), cy.get(), cy.click(), cy.type()","cy.intercept() for API mocking","Custom commands: cypress/support/commands.js","Test auth flow: register → login → dashboard","Test CRUD operations","GitHub Actions: run Cypress on every PR","Generate HTML report"]},
+    {time:"15–16",cat:"dev",title:"Break + fix test failures",sub:"Fix Cypress failures + custom commands",topics:["Fix flaky tests with cy.wait()","Add data-testid attributes to components","Run full Cypress suite"]},
+    {time:"16–19",cat:"placement",title:"Placement — Microsoft SDE mock",sub:"LLD + 2 coding Qs + behavioral",topics:["Microsoft: LLD question (design elevator)","Coding: 2 medium Qs","Behavioral: tell me about a challenge","System design: briefly explain one project","Review all answers"]},
+    {time:"19–22",cat:"dsa",title:"LeetCode Hard sprint — Day 3",sub:"3 Hard Qs: trees + backtracking",topics:["3 hours LeetCode Hard","Focus: Trees + Backtracking","3 problems: aim for clean code","Write step-by-step comments","Review editorial"]}
+  ]},
+  {focus:"Serverless + LLD + LeetCode Hard Day 4",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · stretch",topics:["Freshen & breakfast","10-min stretch","Review week notes"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — timed sprint 50 Qs",sub:"All topics · target 80%+",topics:["50 questions in 50 minutes","All aptitude topics","Strict timer","Score target: 80%+","Analyze every wrong answer"]},
+    {time:"11–12",cat:"apt",title:"Java — Low-Level Design (LLD)",sub:"Parking lot · elevator · design patterns",topics:["LLD interview approach","Gather requirements → class diagram → code","Design Parking lot: classes, enums, methods","Design Elevator system: floors, queue, direction","Identify design patterns used","Draw UML class diagram","Practice explaining LLD in 20 min"]},
+    {time:"12–15",cat:"dev",title:"Serverless architecture",sub:"AWS Lambda · API Gateway · Serverless Framework",topics:["Serverless: function as a service","AWS Lambda: runtime, handler, triggers","API Gateway integration","Serverless Framework: serverless.yml","Deploy function: sls deploy","Cold start problem & solutions","Image resizing Lambda function (S3 trigger)","Cost model: pay per invocation","Serverless vs containers trade-offs"]},
+    {time:"15–16",cat:"dev",title:"Break + deploy Lambda",sub:"Deploy image resizer to AWS",topics:["Deploy image resizer Lambda","Test S3 trigger","Monitor in CloudWatch Logs"]},
+    {time:"16–19",cat:"placement",title:"Placement — Flipkart SDE mock",sub:"2 medium-hard + LLD question",topics:["Flipkart: 2 DSA Qs (medium-hard)","LLD question: design food delivery app","System design: scale to 1M orders/day","Behavioral: handling conflict"]},
+    {time:"19–22",cat:"dsa",title:"LeetCode Hard sprint — Day 4",sub:"3 Hard Qs: heap + advanced graph",topics:["3 hours LeetCode Hard","Focus: Heap + Graph","3 problems","Compare with editorial after each","Understand time & space complexity fully"]}
+  ]},
+  {focus:"GenAI code review bot + FastAPI ML + LeetCode Hard Day 5",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · meditation",topics:["Freshen & breakfast","5-min meditation","Review notes from Mon–Thu"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — evaluation metrics deep",sub:"Precision · recall · F1 · AUC-ROC · BLEU",topics:["Precision = TP/(TP+FP)","Recall = TP/(TP+FN)","F1 = 2·P·R/(P+R)","AUC-ROC interpretation","BLEU score for NLP","NDCG for ranking","Perplexity for language models","When to optimize which metric?"]},
+    {time:"11–12",cat:"apt",title:"Python — FastAPI for ML models",sub:"Pydantic · serve sklearn · Docker + FastAPI",topics:["FastAPI setup: uvicorn, pydantic","Pydantic models for request/response validation","Load sklearn model with pickle/joblib","POST /predict endpoint","Background tasks","Swagger UI auto-docs","Docker + FastAPI Dockerfile","Deploy to AWS EC2"]},
+    {time:"12–15",cat:"dev",title:"GenAI project 2 — AI code review bot",sub:"React + Node + OpenAI + GitHub webhook",topics:["Plan: code review bot architecture","Backend: Node + OpenAI API","Parse code: detect language","Prompt: role=expert reviewer, code=...","Severity scoring: critical, warning, suggestion","GitHub webhook: trigger on PR","Frontend: React + Monaco editor","Export review as Markdown report","Full deploy"]},
+    {time:"15–16",cat:"dev",title:"Break + add features",sub:"Language detection + severity + export",topics:["Add language auto-detection","Add severity badges (critical/warning/suggestion)","Add Markdown export button"]},
+    {time:"16–19",cat:"placement",title:"Placement — startup SDE mock",sub:"Build-in-interview + culture fit",topics:["Startup: 60-min build-in-interview challenge","Build a feature end-to-end in interview","Culture-fit Qs","STAR: leadership example","Startup mindset discussion"]},
+    {time:"19–22",cat:"dsa",title:"LeetCode Hard sprint — Day 5",sub:"Contest simulation · 4 Qs in 90 min",topics:["Contest simulation: 4 Qs in 90 minutes","LeetCode contest format","No hints during contest","Post-contest: review all editorials","Optimize all solutions","Track contest rating estimate"]}
+  ]},
+  {focus:"HLD practice + FastAPI ML + Week 6 review",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · weekly journal",topics:["Freshen & breakfast","Weekly journal","Check progress tracker"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — full 45-Q mock",sub:"Quant + verbal + reasoning · 45 min",topics:["45 questions in 45 minutes","Mix: quant + verbal + reasoning","Strict timer","Score & detailed analysis","Target: 85%+"]},
+    {time:"11–12",cat:"apt",title:"Python — FastAPI + Docker + deploy",sub:"Production ML API full deploy",topics:["Add CORS to FastAPI","Add authentication: API key","Docker multi-stage build for FastAPI","docker-compose: FastAPI + Redis","Deploy to AWS EC2","Load test with locust","Monitor with CloudWatch"]},
+    {time:"12–15",cat:"dev",title:"High-Level Design practice",sub:"Design Twitter + Uber · architecture diagrams",topics:["Design Twitter/X: requirements, components","Twitter: tweet service, timeline, fan-out","Design Uber: driver matching, location service","Components: load balancer, CDN, DB sharding, message queue, cache","CAP theorem: which to sacrifice?","Draw full architecture diagram","Write 1-page HLD document"]},
+    {time:"15–16",cat:"dev",title:"Break + document HLD",sub:"Write HLD doc for one system",topics:["Write HLD doc for Twitter design","Include: components, data flow, scale estimates","Share as GitHub Gist"]},
+    {time:"16–19",cat:"placement",title:"Placement — full panel mock",sub:"20 aptitude + 20 coding + 20 design + 20 HR",topics:["Full panel: 20-min aptitude","20-min coding: 1 medium Qs","20-min system design: brief","20-min HR: all STAR answers","Get feedback from peer/mentor"]},
+    {time:"19–22",cat:"dsa",title:"Week 6 DSA summary",sub:"Review Hard LeetCode · tag gaps · plan Week 7",topics:["Review all Hard LeetCode from this week","Categorize by tag","Identify remaining weak tags","Plan Week 7 DSA focus","Set total LeetCode target: 200+ by end"]}
+  ]},
+  {focus:"SaaS project + multi-agent GenAI + Month 2 audit",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Relaxed · Month 2 reflection",topics:["Relaxed breakfast","15-min walk","Month 2 reflection journal","Plan Week 7 targets"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — Month 2 full audit",sub:"60-Q mock · formula sheet · 85%+",topics:["60-question full aptitude mock","All Phase 1 & 2 topics","Strict 60-minute timer","Create master formula reference sheet","Target: 85%+ score","Error analysis"]},
+    {time:"11–12",cat:"apt",title:"GenAI — multi-agent systems",sub:"AutoGen/CrewAI · researcher + writer agents",topics:["Agent frameworks: AutoGen, CrewAI","Agent roles: researcher, writer, reviewer","Tool use: web search, file write","Agent orchestration: sequential vs parallel","Build 2-agent system: research → write blog post","Evaluate output quality"]},
+    {time:"12–15",cat:"dev",title:"Project — SaaS starter",sub:"Next.js + Stripe + Supabase + OpenAI",topics:["SaaS starter architecture","Next.js App Router","Supabase: auth, database, storage","Stripe: subscription plans, webhooks","Usage limits: track API calls per plan","Dashboard: usage stats","OpenAI integration: feature per plan","Full deploy to Vercel + Supabase"]},
+    {time:"15–16",cat:"dev",title:"Break + write LinkedIn case study",sub:"LinkedIn post + record demo",topics:["Record 2-min demo video","Write LinkedIn case study post","Add to portfolio website"]},
+    {time:"16–19",cat:"placement",title:"Placement — application sprint",sub:"Apply 20 companies · custom cover letters",topics:["Apply to 20 companies (mix: product, service, startup)","Customize cover letter for each","Track applications in spreadsheet","Follow up on previous applications","Message 5 alumni on LinkedIn"]},
+    {time:"19–22",cat:"dsa",title:"Week 6-7 DSA bridge + LeetCode contest",sub:"LeetCode Weekly Contest",topics:["Participate in LeetCode Weekly Contest (Sunday)","All 4 Qs in 90 min","Post-contest review","Update total problem count","Set Week 7 target"]}
+  ]}
+]},
+
+{phase:"Phase 3 — Expert & Job-Ready",theme:"System Design Mastery · Java Concurrency · FAANG Prep · AI Projects",days:[
+  {focus:"Distributed systems + Java concurrency + Sliding window advanced",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · Month 3 goals",topics:["Freshen & breakfast","Set Month 3 goals","Review Phase 2 summary","Plan the whole final month"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — company mock series",sub:"45 Qs · accuracy focus",topics:["Company-pattern mock: 45 Qs in 45 min","Mix: TCS + Infosys + Wipro patterns","Focus on accuracy over speed","Score target: 88%+"]},
+    {time:"11–12",cat:"apt",title:"Java — advanced concurrency",sub:"ReentrantLock · Semaphore · CountDownLatch",topics:["ReentrantLock vs synchronized","Semaphore: limit concurrent access","CountDownLatch: wait for N threads","CyclicBarrier: meet at barrier","ConcurrentHashMap internals","ExecutorService & thread pools","ForkJoinPool","CompletableFuture: thenApply, thenCompose, allOf"]},
+    {time:"12–15",cat:"dev",title:"Distributed systems design",sub:"CAP · consensus · vector clocks · design cache",topics:["CAP theorem: pick 2 of 3","Consistency patterns: strong, eventual, causal","Gossip protocol concept","Consensus algorithms: Raft concept","Paxos concept","Vector clocks for causality","Distributed cache design","Consistent hashing: add/remove nodes","Design: distributed rate limiter"]},
+    {time:"15–16",cat:"dev",title:"Break + draw diagrams",sub:"Architecture diagram for distributed cache",topics:["Draw distributed cache architecture","Document: consistent hashing ring","Write design trade-offs"]},
+    {time:"16–19",cat:"placement",title:"Placement — FAANG coding mock",sub:"2 Hard Qs · explain aloud · optimize",topics:["2 Hard LeetCode-style Qs (strict 40 min)","Explain approach aloud while coding","Optimize from O(n²) to O(n log n)","3 HackerRank company-pattern Qs","Track interview performance"]},
+    {time:"19–22",cat:"dsa",title:"DSA — sliding window advanced",sub:"Variable window · min window substring · K distinct",topics:["Variable size sliding window pattern","Minimum window substring (#76)","Longest substring with K distinct chars (#340)","At most K distinct characters","Fruit into baskets (#904)","LeetCode: 4 sliding window Qs","Time: O(n) solutions only"]}
+  ]},
+  {focus:"DB sharding deep + custom embedding pipeline + Two pointers advanced",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · journal",topics:["Freshen & breakfast","Journal: wins & gaps","Review Mon notes"]},
+    {time:"9–11",cat:"apt",title:"Math for GenAI — embeddings math",sub:"Word2Vec · cosine similarity · t-SNE",topics:["Word2Vec skip-gram: objective function","Negative sampling","Cosine similarity: a·b/(|a||b|)","Embedding space dimensions","t-SNE for visualization concept","Sentence embeddings: mean pool vs CLS token","Evaluate embeddings: semantic textual similarity"]},
+    {time:"11–12",cat:"apt",title:"Python — custom embedding pipeline",sub:"sentence-transformers · ChromaDB · FastAPI",topics:["sentence-transformers: SentenceTransformer('all-MiniLM-L6-v2')","Generate embeddings for documents","Store in ChromaDB: collection.add()","Semantic search: collection.query()","Build FastAPI: POST /embed + POST /search","Test with curl / Postman"]},
+    {time:"12–15",cat:"dev",title:"Database design deep",sub:"Sharding · replicas · WAL · ACID · indexes",topics:["Database sharding: range, hash, directory-based","Shard key selection criteria","Read replicas: async replication","Write-ahead log (WAL) concept","ACID vs BASE trade-offs","Connection pooling: PgBouncer","Database proxy: ProxySQL","Advanced PostgreSQL: partitioning, JSONB, CTEs","Design: Twitter timeline DB schema with sharding"]},
+    {time:"15–16",cat:"dev",title:"Break + DB design practice",sub:"Schema for twitter-like app",topics:["Design full Twitter DB schema","Add sharding strategy annotation","Identify all indexes needed"]},
+    {time:"16–19",cat:"placement",title:"Placement — TCS Digital mock",sub:"3-hr advanced mock",topics:["TCS Digital: 3-hour full mock","Advanced coding round: 3 problems","English & aptitude combined","Detailed review + error log"]},
+    {time:"19–22",cat:"dsa",title:"DSA — two pointers advanced",sub:"3-sum · trapping rain · container water",topics:["3-sum (#15)","4-sum (#18)","Container with most water (#11)","Trapping rain water (#42)","Remove duplicates from sorted array variants","LeetCode: 4 two-pointer Qs"]}
+  ]},
+  {focus:"GenAI interview coach + SageMaker + Binary search advanced",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · goals",topics:["Freshen & breakfast","Set 3 clear goals","Plan coding time blocks"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — advanced number theory",sub:"Fermat · Chinese remainder · modular arithmetic",topics:["Fermat's little theorem: aᵖ⁻¹ ≡ 1 (mod p)","Fast modular exponentiation","Chinese Remainder Theorem","Euler's totient function φ(n)","Multiplicative inverse (mod p)","Competitive math problems using modular arithmetic","Practice 8 Qs"]},
+    {time:"11–12",cat:"apt",title:"Java — memory profiling",sub:"Heap dumps · Eclipse MAT · JMH benchmark",topics:["Heap dump: jmap -dump:...","Eclipse Memory Analyzer (MAT)","Identify: large object array, retained heap","String pool optimization","Avoid autoboxing in loops","Efficient collections: ArrayList vs LinkedList","JMH benchmark: @Benchmark annotation","Practice: benchmark ArrayList vs array"]},
+    {time:"12–15",cat:"dev",title:"GenAI project 3 — AI interview coach",sub:"Next.js + OpenAI + Web Speech + MongoDB",topics:["Plan: AI mock interviewer architecture","Dynamic questions by job role & difficulty","OpenAI: generate contextual questions","Evaluate answer: scoring rubric prompt","Web Speech API: voice input","Text-to-speech for AI responses","Session history in MongoDB","Difficulty slider: easy / medium / hard","Performance analytics dashboard","Full deploy to Vercel"]},
+    {time:"15–16",cat:"dev",title:"Break + polish coach",sub:"Voice input + difficulty slider + UI polish",topics:["Add Web Speech API voice input","Add difficulty slider","Polish UI: animations, transitions","Test full flow from login to feedback"]},
+    {time:"16–19",cat:"placement",title:"Placement — Infosys SP/DSE mock",sub:"3 coding Qs medium-hard + aptitude",topics:["Infosys SP/DSE: 3 coding problems","30-min aptitude section","Time management: don't spend >25 min on 1 Qs","Partial submission strategy","Review all solutions"]},
+    {time:"19–22",cat:"dsa",title:"DSA — binary search advanced",sub:"Rotated array · peak · median · BS on answer",topics:["Search in rotated sorted array (#33, #81)","Find peak element (#162)","Median of two sorted arrays (#4)","Koko eating bananas (#875)","Capacity to ship packages (#1011)","Minimum days to make M bouquets (#1482)","LeetCode: 4 binary search on answer Qs"]}
+  ]},
+  {focus:"Security + AWS SageMaker + Math algorithms",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · stretch",topics:["Freshen & breakfast","10-min stretch","Review week notes so far"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — 60 Qs timed test",sub:"All topics · 85%+ target",topics:["60 questions in 60 minutes","All aptitude topics","Target: 85%+","Review every mistake","Update error notebook"]},
+    {time:"11–12",cat:"apt",title:"Python — deploy ML model on SageMaker",sub:"Training job · endpoint · invoke",topics:["AWS SageMaker: training job setup","Upload data to S3","Create Estimator: script mode","Training job: fit()","Deploy: estimator.deploy(instance_type=...)","Invoke endpoint: runtime.invoke_endpoint()","Monitor: CloudWatch Logs","Cost: remember to delete endpoint after!"]},
+    {time:"12–15",cat:"dev",title:"Security best practices",sub:"OWASP Top 10 · XSS · CSRF · Helmet · ZAP",topics:["OWASP Top 10: A01-A10","SQL injection: prevention in Express + Mongoose","XSS: input sanitization, Content-Security-Policy","CSRF: CSRF token, SameSite cookies","CORS: whitelist origins","Helmet.js: 12 security headers","Rate limiting: express-rate-limit","Input validation: Zod/Joi","HTTPS: force redirect, HSTS","OWASP ZAP: automated scan","Fix all critical ZAP findings"]},
+    {time:"15–16",cat:"dev",title:"Break + security audit",sub:"ZAP scan + fix critical issues",topics:["Run OWASP ZAP on app","Fix all High & Medium findings","Add CSP header","Add HSTS"]},
+    {time:"16–19",cat:"placement",title:"Placement — Capgemini & Mindtree mock",sub:"90-min company mock",topics:["Capgemini: aptitude + English + coding mock","Mindtree: technical MCQs + coding","Combined 90-min practice","Review all sections"]},
+    {time:"19–22",cat:"dsa",title:"DSA — math algorithms",sub:"Sieve · fast exponentiation · matrix exponentiation",topics:["Sieve of Eratosthenes: primes up to N","Segmented sieve","Fast exponentiation: O(log n)","Matrix exponentiation for Fibonacci","GCD: Euclidean algorithm","LCM using GCD","Catalan numbers applications","LeetCode: 4 math Qs"]}
+  ]},
+  {focus:"PWA + LoRA fine-tuning + Game theory DSA",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · meditation",topics:["Morning freshen","5-min meditation","Review all of this week"]},
+    {time:"9–11",cat:"apt",title:"Math for ML — RLHF & LoRA math",sub:"RLHF pipeline · LoRA rank decomposition",topics:["RLHF: reward model training","PPO for LLMs: objective function","KL divergence penalty","LoRA: W = W₀ + BA (rank r)","Parameter count reduction: r*(d_in+d_out)","QLoRA: 4-bit quantization + LoRA","Why fine-tune vs few-shot?"]},
+    {time:"11–12",cat:"apt",title:"Python — fine-tune LLM with LoRA",sub:"Unsloth · PEFT · LLaMA · custom Q&A dataset",topics:["Install unsloth, peft, trl","Load LLaMA-3-8B-Instruct (4-bit)","Apply LoRA config: r=16, alpha=32","Prepare Q&A dataset: Alpaca format","SFTTrainer: train 1 epoch on Colab","Merge LoRA weights","Test fine-tuned model vs base","Save to Hugging Face Hub"]},
+    {time:"12–15",cat:"dev",title:"Progressive Web App (PWA)",sub:"Service worker · manifest · offline · push notifications",topics:["Service worker lifecycle: install, activate, fetch","Cache strategies: cache-first, network-first, stale-while-revalidate","Web App Manifest: name, icons, display, start_url","Background sync API","Push notifications: PushManager, Notification API","Workbox library for SW management","Convert MERN app to PWA","Test offline mode in DevTools","Lighthouse PWA audit: 100 score target","Install PWA on Android/iOS"]},
+    {time:"15–16",cat:"dev",title:"Break + PWA test",sub:"Offline test + install + Lighthouse",topics:["Test PWA offline mode","Install on phone","Run Lighthouse PWA audit","Fix all audit issues"]},
+    {time:"16–19",cat:"placement",title:"Placement — FAANG system design mock",sub:"Design Netflix — 60 min full",topics:["Design Netflix: 60-min full session","Requirements: functional & non-functional","Components: CDN, transcoding, recommendation","Database: metadata vs object storage","Scale: 200M users","Draw full diagram","Estimate: bandwidth, storage, QPS"]},
+    {time:"19–22",cat:"dsa",title:"DSA — game theory & puzzles",sub:"Nim · stone game · predict winner · minimax",topics:["Nim game (#292)","Stone game (#877)","Predict the winner (#486)","Minimax algorithm concept","Alpha-beta pruning concept","Sprague-Grundy theorem (concept)","LeetCode: 4 game theory Qs"]}
+  ]},
+  {focus:"CI/CD advanced + Java Project Loom + LeetCode contest",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · weekly journal",topics:["Freshen & breakfast","Weekly journal","Update progress tracker"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — Week 7 mock",sub:"45-Q all patterns · score analysis",topics:["45-question mock","All company patterns","Score analysis","Update error notebook","Target: 90%+"]},
+    {time:"11–12",cat:"apt",title:"Java — Project Loom virtual threads",sub:"Virtual threads · structured concurrency",topics:["Project Loom: virtual vs platform threads","Thread.ofVirtual().start()","StructuredTaskScope","Loom vs reactive: comparison","Benchmark: virtual threads vs thread pool","When to use virtual threads","Practice: rewrite thread pool app with Loom"]},
+    {time:"12–15",cat:"dev",title:"Advanced CI/CD",sub:"Blue-green · canary · feature flags · GitHub Actions",topics:["Blue-green deployment: swap production","Canary release: route 5% traffic","Feature flags: LaunchDarkly / Unleash / Flagsmith","A/B testing setup","Rollback strategy: automated & manual","GitHub Actions: matrix builds","Cache dependencies in GitHub Actions","Deploy to AWS ECS with GitHub Actions","Environment promotion: dev → staging → prod"]},
+    {time:"15–16",cat:"dev",title:"Break + feature flags",sub:"Add feature flag to app",topics:["Integrate Flagsmith feature flag","Add flag to control new feature","Test: flag ON vs OFF behavior"]},
+    {time:"16–19",cat:"placement",title:"Placement — FAANG panel mock",sub:"30 coding + 30 design + 20 behavioral",topics:["Full FAANG panel: 30-min coding (2 Qs)","30-min system design: design Slack","20-min behavioral: 3 STAR stories","Score yourself: coding, design, communication","Identify weak areas for final week"]},
+    {time:"19–22",cat:"dsa",title:"DSA — LeetCode contest",sub:"Weekly contest · 4 Qs in 90 min · review",topics:["Participate in LeetCode Weekly Contest","4 Qs in 90 minutes","No external help during contest","Post-contest: review all editorials","Update total problem count","Target milestone: 200+ problems!"]}
+  ]},
+  {focus:"SaaS final polish + GenAI agent + Month 3 audit",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Relaxed · plan Week 8",topics:["Relaxed breakfast","15-min walk","Plan final Week 8","Month 3 reflection journal"]},
+    {time:"9–11",cat:"apt",title:"Stats & probability — final deep",sub:"Hypothesis testing · p-value · CLT",topics:["Hypothesis testing: H₀ vs H₁","p-value interpretation","Type I & II errors","Central limit theorem application","Confidence intervals","Two-sample t-test","Chi-square test concept"]},
+    {time:"11–12",cat:"apt",title:"GenAI — AI agent with tools",sub:"LangChain agent · web search · code interpreter",topics:["LangChain agent types: Zero-shot, ReAct","Tools: TavilySearch, PythonREPL, Calculator","Memory: ConversationBufferWindowMemory","Multi-step reasoning chain","Build: research agent that searches + summarizes","Add: write to file tool","Test complex multi-step task"]},
+    {time:"12–15",cat:"dev",title:"Final SaaS project polish",sub:"AI job board: React+TS + Next.js + Node + MongoDB + Redis + AI",topics:["Polish AI job board SaaS","AI job matching: embed job + candidate → cosine similarity","Smart search: semantic search with embeddings","Subscription: Stripe + feature gating","Real-time notifications: Socket.io","Analytics dashboard: Recharts","PWA enabled","E2E tests: Cypress","Full deploy: Vercel + AWS + MongoDB Atlas + Redis Cloud"]},
+    {time:"15–16",cat:"dev",title:"Break + deploy + case study",sub:"Deploy + write LinkedIn case study",topics:["Final production deploy","Record 3-min demo video","Write detailed LinkedIn case study post","Post on Twitter/X & Dev.to"]},
+    {time:"16–19",cat:"placement",title:"Placement — application sprint",sub:"Apply 20 companies · referrals · track",topics:["Apply to 20 more companies","Ask for referrals from LinkedIn connections","Check application status: 30+ applied","Schedule upcoming interviews","Respond to recruiter messages"]},
+    {time:"19–22",cat:"dsa",title:"Month 3 DSA & LeetCode contest",sub:"Contest + month audit + set Month 4 target",topics:["Participate in LeetCode Biweekly Contest","Review all solved this month","Total count review: target 250+","Identify remaining gaps","Plan Month 4: open source contributions","Set Month 4 DSA target: 300+ total"]}
+  ]}
+]},
+
+{phase:"Phase 3 — Expert & Job-Ready",theme:"Capstone · Interview Simulation · Final Deployment",days:[
+  {focus:"Capstone project begin + FAANG mock + LeetCode contest 1",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · final phase goals",topics:["Freshen & breakfast","Set final phase goals","Plan capstone project architecture","Review all projects built so far"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — company sprint",sub:"TCS+Infosys+Wipro+Accenture 60 Qs",topics:["60 questions from all company patterns","TCS NQT style","Infosys style","Wipro NLTH style","Accenture cognitive style","Score & analyze all"]},
+    {time:"11–12",cat:"apt",title:"Java — Clean Code & SOLID",sub:"SOLID principles · refactor existing code",topics:["Single Responsibility Principle","Open/Closed Principle","Liskov Substitution Principle","Interface Segregation Principle","Dependency Inversion Principle","Refactor existing Spring Boot code with SOLID","Clean code: naming, functions, comments","Practice: code review exercise"]},
+    {time:"12–15",cat:"dev",title:"Final capstone — project setup",sub:"AI platform: schema · API design · CI/CD",topics:["Choose capstone: AI-powered e-learning / healthcare / job portal","Define: user stories, tech stack, deployment plan","Database schema design (MongoDB + Redis)","REST API design with versioning","Frontend component hierarchy","Authentication flow design","CI/CD pipeline setup (GitHub Actions)","Connect all services","Initialize all repos with READMEs"]},
+    {time:"15–16",cat:"dev",title:"Break + initialize repos",sub:"All repos set up + CI running",topics:["Initialize all 3 repos (frontend, backend, ML)","Set up GitHub Actions on each","Configure environment variables","Connect MongoDB Atlas & Redis Cloud"]},
+    {time:"16–19",cat:"placement",title:"Placement — full dress rehearsal",sub:"Aptitude + coding + technical + HR full mock",topics:["Complete mock: Aptitude 30 min","Coding: 1 medium + 1 hard (45 min)","Technical interview: 30 min","HR interview: 15 min","Video record yourself","Review recording critically"]},
+    {time:"19–22",cat:"dsa",title:"LeetCode mock contest 1",sub:"90-min: 4 Qs · target 3/4",topics:["90-minute timed contest simulation","4 questions: 1 easy + 2 medium + 1 hard","No hints during contest","Post-contest: review all editorials","Target: 3/4 problems solved"]}
+  ]},
+  {focus:"Capstone backend + ML pipeline + LeetCode contest 2",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · journal",topics:["Freshen & breakfast","Journal: final phase progress","Review Mon notes"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — final mock series 1",sub:"40-Q · target 90%",topics:["40-question mock test","All aptitude topics","Target: 90%","Analyze every wrong answer","This is your last chance to improve aptitude!"]},
+    {time:"11–12",cat:"apt",title:"Python — full end-to-end ML pipeline",sub:"Ingest → EDA → train → evaluate → deploy → Docker",topics:["Data ingestion from API / CSV","EDA: pandas-profiling","Feature engineering pipeline","Model training: best model selection","MLflow experiment tracking","FastAPI prediction endpoint","Docker multi-stage build","Deploy to AWS EC2","Monitor: Grafana + Prometheus (concept)"]},
+    {time:"12–15",cat:"dev",title:"Capstone — backend development",sub:"All APIs · JWT · S3 upload · email · WebSocket",topics:["Build all REST/GraphQL APIs","JWT auth with refresh tokens","File upload: multer → S3","Email service: nodemailer + SES","WebSocket: real-time notifications","Redis: caching + session","Rate limiting per user plan","API versioning: /v1/...","Full Postman test collection","All API docs with Swagger"]},
+    {time:"15–16",cat:"dev",title:"Break + full API test",sub:"Postman collection + Swagger",topics:["Run full Postman collection","Fix all failing tests","Export Swagger/OpenAPI spec"]},
+    {time:"16–19",cat:"placement",title:"Placement — technical interview DSA",sub:"Solve 10 LeetCode Qs in 2 hours",topics:["2-hour DSA practice session","10 mixed LeetCode Qs","Explain each solution aloud","Optimize all solutions to best complexity","Track total count"]},
+    {time:"19–22",cat:"dsa",title:"LeetCode mock contest 2",sub:"90-min: 4 Qs · review + optimize",topics:["90-minute contest simulation","4 Qs: 1 easy + 2 medium + 1 hard","Review optimal solutions","Compare time per problem","Target: 3.5/4 problems solved"]}
+  ]},
+  {focus:"Capstone frontend + Java final API + LeetCode contest 3",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · goals",topics:["Freshen & breakfast","Set coding milestones for today","Review capstone progress"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — final mock series 2",sub:"Verbal+Quant+Reasoning 40-Q · 85%+",topics:["40-question mock: 15 verbal + 15 quant + 10 reasoning","40-minute strict timer","Score target: 85%+","Focus: verbal comprehension & inference"]},
+    {time:"11–12",cat:"apt",title:"Java — final Spring Boot API",sub:"Spring Boot + JWT + PostgreSQL + Railway deploy",topics:["Build Spring Boot REST API for capstone","JWT auth with Spring Security","Spring Data JPA + PostgreSQL","Swagger/OpenAPI documentation","Pagination & sorting","Global exception handler","Deploy to Railway.app or Heroku","Test all endpoints with Postman"]},
+    {time:"12–15",cat:"dev",title:"Capstone — frontend development",sub:"All pages · Redux · responsive · dark mode · a11y",topics:["Build all React/Next.js pages","State management: Redux Toolkit","Responsive: mobile-first with Tailwind/CSS","Dark mode: system preference + toggle","Loading skeletons for all data fetches","Error boundaries","Accessibility: ARIA, keyboard nav, WCAG 2.1","Form validation: React Hook Form + Zod","Optimistic UI updates","All pages: home, dashboard, profile, settings"]},
+    {time:"15–16",cat:"dev",title:"Break + cross-platform test",sub:"Mobile/tablet/desktop + fix responsive",topics:["Test on Chrome, Firefox, Safari","Test on mobile & tablet","Fix all responsive issues","Run Lighthouse: target 90+ all categories"]},
+    {time:"16–19",cat:"placement",title:"Placement — system design final mock",sub:"Design Instagram + Dropbox in 60 min",topics:["Design Instagram: 30 min","Design Dropbox: 30 min","Full architecture diagram for each","Component justification","Scale estimates","Ranking: storage, CDN, feed generation"]},
+    {time:"19–22",cat:"dsa",title:"LeetCode mock contest 3",sub:"90-min · target 3.5/4 · full editorial review",topics:["90-minute contest simulation","Target: 3.5/4 problems","Move on if stuck after 20 min","Full editorial review after","Compare approach with top solutions"]}
+  ]},
+  {focus:"Capstone AI features + production best practices + LeetCode sprint",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · stretch",topics:["Freshen & breakfast","Stretch 10 min","Review week progress"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — TCS NQT full 2-hr mock",sub:"Full NQT simulation",topics:["TCS NQT: 2-hour full simulation","Section 1: Numerical ability (26 Qs, 40 min)","Section 2: Verbal ability (24 Qs, 30 min)","Section 3: Reasoning (30 Qs, 50 min)","Coding: 1 easy + 1 medium","Score & final analysis"]},
+    {time:"11–12",cat:"apt",title:"GenAI — production LLM best practices",sub:"Prompt injection · hallucination · monitoring",topics:["Prompt injection attacks & defense","Output validation with Guardrails","Hallucination mitigation: retrieval + citation","Cost optimization: caching, smaller models","Token optimization: concise prompts","LangSmith for LLM monitoring","Rate limiting per user","Fallback strategy: GPT-4 → GPT-3.5 → local"]},
+    {time:"12–15",cat:"dev",title:"Capstone — AI feature integration",sub:"AI recommendation · smart search · chatbot",topics:["AI recommendation engine: embedding similarity","Smart search: semantic search with embeddings","In-app AI chatbot: context-aware responses","Auto-summarize: long content → 3-line summary","AI content generation: templates + custom prompt","Integrate OpenAI / HuggingFace / local model","A/B test: AI feature vs control","Measure: engagement, retention impact"]},
+    {time:"15–16",cat:"dev",title:"Break + performance audit",sub:"Lighthouse + fix all issues",topics:["Run Lighthouse audit","Fix all performance issues","Fix all accessibility issues","Score target: 95+ across all categories"]},
+    {time:"16–19",cat:"placement",title:"Placement — final panel mock",sub:"Aptitude + coding + system design + HR",topics:["Full panel: Aptitude 20 min","Coding: 1 medium + 1 hard 40 min","System design: your choice of system 30 min","HR: 3 behavioral Qs with STAR 20 min","Video record full session","Review & score each section"]},
+    {time:"19–22",cat:"dsa",title:"DSA — final weak tag sprint",sub:"Top 3 weak tags · 6 targeted Qs",topics:["Identify top 3 weak LeetCode tags from history","Solve 6 targeted Qs on weak tags","Write solution notes for each","No moving on until fully understood","Total count check: target 230+"]}
+  ]},
+  {focus:"Capstone polish + 120-Q mega mock + final DSA sprint",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Freshen · meditation · final week!",topics:["Freshen & breakfast","5-min meditation","Final week — you've got this!","Review all 3 months of progress"]},
+    {time:"9–11",cat:"apt",title:"Final aptitude — 120 Qs mega mock",sub:"All patterns · 2 hours · final analysis",topics:["120-question mega mock","All company patterns: TCS + Infosys + Wipro + Accenture + Cognizant","2-hour strict timer","Final error analysis","Create master reference sheet","Target: 85%+ on all sections"]},
+    {time:"11–12",cat:"apt",title:"Java — final rapid-fire revision",sub:"50 Java interview Qs · Spring Boot Q&A",topics:["Top 50 Java interview Qs (rapid-fire)","Core Java: OOP, Collections, Exceptions, Threads","Spring Boot: annotations, JPA, Security","Design patterns: Singleton, Factory, Observer","Java 8+: streams, lambdas, Optional","JVM: GC, memory, tuning"]},
+    {time:"12–15",cat:"dev",title:"Capstone — polish & documentation",sub:"Docs · README · demo video · architecture doc",topics:["Write full technical README","Setup guide: step-by-step","Architecture document: all components","API documentation (link to Swagger)","Record 3-minute demo video","Add to portfolio website","Write project case study blog post","Prepare 2-minute verbal project pitch"]},
+    {time:"15–16",cat:"dev",title:"Break + final production deploy",sub:"All services deployed + custom domain",topics:["Final production deploy: all services","Custom domain setup","SSL certificate check","Smoke test all critical paths","Monitor for 1 hour"]},
+    {time:"16–19",cat:"placement",title:"Placement — final career audit",sub:"All platforms · 50+ applied · referrals",topics:["All 6+ projects on portfolio website","GitHub: 100+ commits, clean repos","LinkedIn: 500+ connections target","Applied to 50+ companies: check status","Follow up with all pending applications","Request referrals from senior connections","Set interview-ready status on LinkedIn","Cold message 10 new recruiters"]},
+    {time:"19–22",cat:"dsa",title:"Final LeetCode session + milestone",sub:"8 Qs: 2E+4M+2H · target 250+ total",topics:["Solve 8 LeetCode Qs: 2 Easy + 4 Medium + 2 Hard","Aim for 250+ total problems solved","Celebrate this milestone!","Write a short LeetCode journey post","Plan Month 4: open source + 300+ target"]}
+  ]},
+  {focus:"3-month review + career launch + celebrate!",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Celebrate · reflect on 3 months",topics:["Freshen & breakfast","Celebrate 3 months of hard work!","Write a reflection journal","Read what you wrote on Day 1"]},
+    {time:"9–11",cat:"apt",title:"Aptitude — 3-month final review",sub:"Master formula sheet · final 50-Q test",topics:["Create master formula reference sheet","Final 50-question aptitude test","Score & archive error notebook","Share formula sheet with peers"]},
+    {time:"11–12",cat:"apt",title:"ML/GenAI 3-month review",sub:"Summarize all ML concepts · revisit projects",topics:["Summarize all ML topics learned","Review all 3 GenAI projects built","Document: what worked, what didn't","Write ML journey blog post on Dev.to / Medium"]},
+    {time:"12–15",cat:"dev",title:"3-month development review",sub:"All projects · pick best 3 · write blog",topics:["Review all projects built in 3 months","Pick best 3 for showcase","Polish those 3: update READMEs, demos","Write: '3 months of coding — what I built and learned'","Post on LinkedIn, Twitter/X, Dev.to"]},
+    {time:"15–16",cat:"dev",title:"Break + plan Month 4",sub:"Open source · freelance · internship",topics:["Plan Month 4 goals","Open source: find a project to contribute","Freelance: first client project","Internship: prepare for technical rounds","Advanced: system design, competitive programming"]},
+    {time:"16–19",cat:"placement",title:"Career launch — final push",sub:"Thank mentors · set interview-ready status",topics:["Send thank-you messages to mentors & peers","Post '3-month journey' on LinkedIn (get 100+ likes!)","Update: interview-ready status on all platforms","Apply to 10 more dream companies","Prepare for upcoming interview rounds","Schedule mock interviews for next week"]},
+    {time:"19–22",cat:"dsa",title:"DSA — 3-month celebration & plan",sub:"Contest + Month 4 goal: 300+ problems",topics:["Participate in LeetCode contest","Enjoy the contest: you've trained for this!","Update total problem count: 250+ milestone","Plan Month 4 DSA target: 300+ total","Explore competitive programming: Codeforces","REST: you deserve it!"]}
+  ]},
+  {focus:"Recovery day + planning + light review",slots:[
+    {time:"8–9",cat:"morning",title:"Morning routine",sub:"Rest & relax · no pressure",topics:["Full relaxed morning","Healthy breakfast","Light walk outside","No rush today — you've earned it"]},
+    {time:"9–11",cat:"apt",title:"Rest + light review",sub:"Light reading · no pressure",topics:["Light review of any 1 topic of interest","No timed tests today","Watch 1 tech talk: YouTube (Fireship, ByteByteGo)","Rest & recover"]},
+    {time:"11–12",cat:"apt",title:"Catch-up / flexible day",sub:"Catch up on any missed topics",topics:["Catch up on anything missed from 3 months","Or explore something new: Rust, Go, Web3","Or just rest — it's okay!"]},
+    {time:"12–15",cat:"dev",title:"Month 4 roadmap planning",sub:"Open source · advanced topics · contributions",topics:["Research open source projects to contribute to","Advanced topics: Rust, Go, WebAssembly, Web3","Competitive programming path: Codeforces Div 3","Advanced system design: read 'Designing Data-Intensive Applications'","Plan first freelance project scope","Set Month 4 weekly targets"]},
+    {time:"15–16",cat:"dev",title:"Break — full rest",sub:"No screen time · outdoor walk",topics:["Take a proper break","No laptop, no screen","Walk outside 30 min","Call a friend or family member"]},
+    {time:"16–19",cat:"placement",title:"Interview status review",sub:"Check all applications · schedule interviews",topics:["Check all 50+ applications status","Respond to all recruiter messages","Schedule upcoming interview rounds","Prepare for interview: review company","Set up mock interview with a peer"]},
+    {time:"19–22",cat:"dsa",title:"Light LeetCode — fun problems",sub:"1–2 easy fun Qs · no pressure",topics:["1-2 easy fun LeetCode problems","Pick topics you enjoy","No timer, no pressure","Just code for fun","Rest early — big Month 4 ahead!"]}
+  ]}
+]}
+];
+
+const stored = {};
+try { Object.assign(stored, JSON.parse(localStorage.getItem('tt_progress')||'{}')); } catch(e){}
+
+function loadJson(key,fallback){
+  try {
+    const value=JSON.parse(localStorage.getItem(key)||'null');
+    return value === null ? fallback : value;
+  } catch(e) {
+    return fallback;
+  }
+}
+
+function saveJson(key,value){
+  try { localStorage.setItem(key,JSON.stringify(value)); } catch(e){}
+}
+
+assistantHistory = Array.isArray(loadJson(ASSISTANT_HISTORY_KEY,[])) ? loadJson(ASSISTANT_HISTORY_KEY,[]) : [];
+customReminders = Array.isArray(loadJson(REMINDER_KEY,[])) ? loadJson(REMINDER_KEY,[]) : [];
+
+function saveProgress(){ try{localStorage.setItem('tt_progress',JSON.stringify(stored));}catch(e){} }
+
+let currentWeek = 0;
+let currentDay = 0;
+let openSlot = null;
+
+function getWeekDates(weekIdx){
+  const dates = [];
+  for(let i=0;i<7;i++){
+    const d = new Date(START);
+    d.setDate(START.getDate() + weekIdx*7 + i);
+    dates.push(d);
+  }
+  return dates;
+}
+
+function isToday(d){
+  const now = new Date();
+  return d.getDate()===now.getDate() && d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+}
+
+function topicKey(wi,di,si,ti){ return `w${wi}_d${di}_s${si}_t${ti}`; }
+function slotKey(wi,di,si){ return `s_w${wi}_d${di}_s${si}`; }
+
+function getCurrentDayEntry(){
+  return WEEKS[currentWeek]?.days?.[currentDay] || null;
+}
+
+function getCurrentFocusText(){
+  const day=getCurrentDayEntry();
+  if(!day) return '';
+  return [day.focus].concat(day.slots.map(slot => slot.title)).join(' | ');
+}
+
+function getTodayPlanLines(){
+  const day=getCurrentDayEntry();
+  if(!day) return [];
+  return day.slots.map(slot => `${slot.time} ${slot.title} — ${slot.sub}`);
+}
+
+function getRoadmapMatches(text){
+  const source=(text||'').toLowerCase();
+  const matches=[];
+  for(const hint of TOPIC_HINTS){
+    if(hint.match.some(token => source.includes(token)) && !matches.some(item => item.url===hint.url)) {
+      matches.push(hint);
+    }
+  }
+  return matches;
+}
+
+function renderQuickRoadmapLinks(){
+  const target=document.getElementById('quickRoadmapLinks');
+  if(!target) return;
+  const matches=getRoadmapMatches(getCurrentFocusText());
+  target.innerHTML=matches.slice(0,4).map(item => `<a class="roadmap-link" href="${item.url}" target="_blank" rel="noreferrer">${item.label}</a>`).join('') || '<span class="reminder-empty">No roadmap match yet</span>';
+}
+
+function renderTodayReminders(){
+  const target=document.getElementById('todayReminders');
+  if(!target) return;
+  const day=getCurrentDayEntry();
+  const lines=[
+    `Wake up at 8:00 AM, then complete the 8–9 AM morning block.`,
+    ...(day ? day.slots.slice(0,2).map(slot => `${slot.time} ${slot.title}`) : []),
+    ...customReminders.slice(0,4).map(item => item.text)
+  ];
+  target.innerHTML=lines.length ? lines.slice(0,6).map(text => `<div class="reminder-pill">${text}</div>`).join('') : '<div class="reminder-empty">No reminders yet. Add one from the assistant.</div>';
+}
+
+function renderAssistantSuggestions(){
+  const target=document.getElementById('nextTasks');
+  if(!target) return;
+  const matches=getRoadmapMatches(getCurrentFocusText());
+  const suggestions=[
+    `Finish ${getCurrentDayEntry()?.focus || "today's plan"} in sequence: morning → aptitude → dev → placement → DSA.`,
+    matches.length ? `Deep dive next: ${matches.map(item => item.label).join(', ')}.` : 'Use roadmap.sh to explore the next layer after the current slot is done.',
+    'After a topic is complete, add 1 small project or 3 extra practice questions.'
+  ];
+  target.innerHTML=suggestions.map(text => `<div class="assistant-item">${text}</div>`).join('');
+}
+
+function renderAssistantOutput(){
+  const target=document.getElementById('assistantOutput');
+  if(!target) return;
+  const last=assistantHistory.slice(-4);
+  target.innerHTML=last.length ? last.map(item => `${item.role === 'user' ? 'You' : 'Assistant'}: ${item.text}`).join('\n\n') : 'Ask for a next task, a deeper roadmap.sh path, or a reminder and I will update the timetable logic locally.';
+}
+
+function appendAssistantMessage(role,text){
+  assistantHistory.push({role,text,time:new Date().toISOString()});
+  saveJson(ASSISTANT_HISTORY_KEY,assistantHistory.slice(-20));
+  renderAssistantOutput();
+}
+
+function getGeminiKey(){
+  return window.GEMINI_API_KEY || localStorage.getItem(GEMINI_KEY_STORAGE) || '';
+}
+
+function getGeminiKeySource(){
+  if(localStorage.getItem(GEMINI_KEY_STORAGE)) return 'local storage';
+  if(window.GEMINI_API_KEY) return 'window.GEMINI_API_KEY';
+  return 'none';
+}
+
+function setAssistantMeta(text){
+  const target=document.getElementById('assistantMeta');
+  if(target) target.textContent=text;
+}
+
+async function validateGeminiCandidate(candidateKey){
+  const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(candidateKey)}`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      contents:[{role:'user',parts:[{text:'Reply with the single word OK if this Gemini key is valid.'}]}],
+      generationConfig:{temperature:0,maxOutputTokens:8}
+    })
+  });
+
+  if(!response.ok){
+    const errorText=await response.text();
+    throw new Error(errorText || `Gemini validation failed with ${response.status}`);
+  }
+
+  const data=await response.json();
+  const text=data?.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('').trim() || '';
+  if(!text) throw new Error('Gemini validation returned no response');
+  return text;
+}
+
+async function saveGeminiKey(){
+  const input=document.getElementById('geminiKeyInput');
+  const key=(input?.value || '').trim();
+  if(!key){
+    setAssistantMeta('Paste a Gemini API key first, or inject one as window.GEMINI_API_KEY before loading the page.');
+    return;
+  }
+  setAssistantMeta('Validating Gemini key...');
+  try{
+    await validateGeminiCandidate(key);
+    localStorage.setItem(GEMINI_KEY_STORAGE,key);
+    if(input) input.value='';
+    setAssistantMeta('Gemini key saved locally and validated successfully.');
+  }catch(error){
+    localStorage.removeItem(GEMINI_KEY_STORAGE);
+    setAssistantMeta(`Gemini key validation failed. The assistant stayed on the local planner. ${error.message || error}`);
+  }
+}
+
+async function validateCurrentGeminiKey(){
+  const input=document.getElementById('geminiKeyInput');
+  const candidate=(input?.value || '').trim() || getGeminiKey();
+  if(!candidate){
+    setAssistantMeta('No Gemini key is available to validate. Paste one, or inject window.GEMINI_API_KEY before loading the page.');
+    return;
+  }
+  setAssistantMeta(`Validating Gemini key from ${getGeminiKeySource()}...`);
+  try{
+    await validateGeminiCandidate(candidate);
+    if((input?.value || '').trim()){
+      localStorage.setItem(GEMINI_KEY_STORAGE,candidate);
+      if(input) input.value='';
+    }
+    setAssistantMeta(`Gemini key validated successfully from ${getGeminiKeySource()}.`);
+  }catch(error){
+    if(localStorage.getItem(GEMINI_KEY_STORAGE)) localStorage.removeItem(GEMINI_KEY_STORAGE);
+    setAssistantMeta(`Gemini key validation failed. Falling back to the local planner. ${error.message || error}`);
+  }
+}
+
+async function rotateGeminiKey(){
+  localStorage.removeItem(GEMINI_KEY_STORAGE);
+  const input=document.getElementById('geminiKeyInput');
+  if(input) input.value='';
+  setAssistantMeta('Local Gemini key cleared. Paste a replacement key and save it, or use an injected window.GEMINI_API_KEY.');
+}
+
+function clearGeminiKey(){
+  localStorage.removeItem(GEMINI_KEY_STORAGE);
+  const input=document.getElementById('geminiKeyInput');
+  if(input) input.value='';
+  setAssistantMeta('Local Gemini key cleared. The assistant will use the built-in local planner unless window.GEMINI_API_KEY is injected again.');
+}
+
+function buildAssistantPrompt(userText){
+  const plan = getTodayPlanLines().join('\n');
+  const currentFocus = getCurrentFocusText();
+  const roadmapOptions = getRoadmapMatches(userText).map(item => `${item.label}: ${item.url}`).join('\n');
+  return [
+    'You are a study planner assistant for a 3-month timetable.',
+    'Keep answers short, actionable, and aligned to the user\'s study priorities.',
+    'Primary priorities: development first, then Java core/OOP, DSA, placement prep, Python, GenAI/ML basics, and math for ML.',
+    'If the user asks for more depth, suggest roadmap.sh topics or a small follow-up task.',
+    'Today\'s schedule:',
+    plan,
+    'Current focus:',
+    currentFocus,
+    roadmapOptions ? `Matching roadmap.sh links:\n${roadmapOptions}` : 'Matching roadmap.sh links: none detected.',
+    `User request: ${userText}`,
+    'Return a concise reply with the next task, one deeper topic, and one short practice item when relevant.'
+  ].join('\n');
+}
+
+async function askGemini(userText){
+  const key=getGeminiKey();
+  if(!key) return null;
+  const prompt=buildAssistantPrompt(userText);
+  const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(key)}`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      contents:[{role:'user',parts:[{text:prompt}]}],
+      generationConfig:{temperature:0.4,topP:0.9,maxOutputTokens:300}
+    })
+  });
+
+  if(!response.ok) {
+    const errorText=await response.text();
+    throw new Error(errorText || `Gemini request failed with ${response.status}`);
+  }
+
+  const data=await response.json();
+  return data?.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('').trim() || null;
+}
+
+function explainRoadmapTargets(text){
+  const matches=getRoadmapMatches(text);
+  if(matches.length) return matches.map(item => `${item.label}: ${item.text}`).join('\n');
+  return 'I could not map that topic directly. Try HTML, CSS, JavaScript, React, Node.js, Java, Python, DSA, MongoDB, or System Design.';
+}
+
+function normalizeTaskRequest(text){
+  const value=(text||'').trim();
+  if(!value) return getTodayPlanLines().join('\n');
+  const matches=getRoadmapMatches(value);
+  const extra = matches.length ? `\nRoadmap.sh: ${matches.map(item => item.label).join(', ')}` : '';
+  return `${value}${extra}`;
+}
+
+async function runAssistant(){
+  const prompt=document.getElementById('assistantPrompt');
+  const input=(prompt?.value || '').trim();
+  const text=input || getCurrentFocusText();
+  appendAssistantMessage('user', text);
+
+  setAssistantMeta(getGeminiKey() ? 'Gemini is enabled for this page session.' : 'Using local planner. Save a key locally or inject window.GEMINI_API_KEY to use Gemini.' );
+
+  try {
+    const geminiReply = await askGemini(text);
+    if(geminiReply){
+      appendAssistantMessage('assistant', geminiReply);
+    } else {
+      appendAssistantMessage('assistant', localAssistantReply(text));
+    }
+  } catch(error){
+    appendAssistantMessage('assistant', `${localAssistantReply(text)}\n\nGemini error: ${error.message || error}`);
+  }
+
+  if(prompt) prompt.value='';
+  renderTodayReminders();
+  renderAssistantSuggestions();
+}
+
+function localAssistantReply(text){
+  const lower=text.toLowerCase();
+  if(lower.includes('reminder') || lower.includes('today')) {
+    return `Today’s plan:\n${getTodayPlanLines().join('\n')}`;
+  }
+  if(lower.includes('next') || lower.includes('after') || lower.includes('completed') || lower.includes('finished')) {
+    return `Next-step plan:\n${normalizeTaskRequest(text)}\n\nSuggested extra practice: 3 more questions, 1 revision note, and 1 small build.`;
+  }
+  if(lower.includes('roadmap') || lower.includes('deep dive') || lower.includes('learn more')) {
+    return `${explainRoadmapTargets(text)}\n\nOpen the matching roadmap.sh link from the quick links above.`;
+  }
+  if(lower.includes('genai') || lower.includes('ai') || lower.includes('ml')) {
+    return 'For GenAI/ML, keep the order: Python basics → math for ML → scikit-learn → core ML concepts → embeddings → RAG → small projects.';
+  }
+  if(lower.includes('java')) {
+    return 'For Java, follow: basics → OOP → collections → exceptions → file I/O → multithreading → JVM and design patterns.';
+  }
+  if(lower.includes('dsa') || lower.includes('leetcode') || lower.includes('hackerrank')) {
+    return 'For DSA, continue: arrays → strings → recursion → sorting → binary search → linked lists → stacks/queues → trees → hashing → graphs → DP.';
+  }
+  return `I can help you turn that into a task. Current focus:\n${getCurrentFocusText()}\n\nTry asking for: more practice, a roadmap.sh deep dive, or a reminder for today.`;
+}
+
+function addTodayReminder(){
+  const text=(document.getElementById('assistantPrompt')?.value || '').trim() || 'Review today\'s study blocks and finish the current slot.';
+  customReminders.unshift({text, createdAt:new Date().toISOString()});
+  customReminders = customReminders.slice(0,8);
+  saveJson(REMINDER_KEY,customReminders);
+  renderTodayReminders();
+  appendAssistantMessage('assistant', `Added reminder: ${text}`);
+}
+
+function fillTodayPlan(){
+  const prompt=document.getElementById('assistantPrompt');
+  if(prompt) prompt.value=getTodayPlanLines().join('\n');
+  renderAssistantOutput();
+}
+
+function openRoadmapForCurrentFocus(){
+  const matches=getRoadmapMatches(getCurrentFocusText());
+  const url=matches[0]?.url || 'https://roadmap.sh';
+  window.open(url,'_blank','noopener,noreferrer');
+}
+
+function countTotal(){
+  let total=0,done=0;
+  WEEKS.forEach((w,wi)=>{
+    w.days.forEach((d,di)=>{
+      d.slots.forEach((s,si)=>{
+        s.topics.forEach((t,ti)=>{
+          total++;
+          if(stored[topicKey(wi,di,si,ti)]) done++;
+        });
+      });
+    });
+  });
+  return {total,done};
+}
+
+function countWeek(wi){
+  let total=0,done=0;
+  WEEKS[wi].days.forEach((d,di)=>{
+    d.slots.forEach((s,si)=>{
+      s.topics.forEach((t,ti)=>{
+        total++;
+        if(stored[topicKey(wi,di,si,ti)]) done++;
+      });
+    });
+  });
+  return {total,done};
+}
+
+function countDay(wi,di){
+  let total=0,done=0;
+  WEEKS[wi].days[di].slots.forEach((s,si)=>{
+    s.topics.forEach((t,ti)=>{
+      total++;
+      if(stored[topicKey(wi,di,si,ti)]) done++;
+    });
+  });
+  return {total,done};
+}
+
+function renderStats(){
+  const {total,done}=countTotal();
+  const pct=total>0?Math.round(done/total*100):0;
+  const weeks_done=WEEKS.filter((_,wi)=>{ const c=countWeek(wi); return c.done===c.total&&c.total>0; }).length;
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat"><div class="stat-n">${pct}%</div><div class="stat-l">Overall progress</div></div>
+    <div class="stat"><div class="stat-n">${done}</div><div class="stat-l">Topics done</div></div>
+    <div class="stat"><div class="stat-n">${total-done}</div><div class="stat-l">Topics remaining</div></div>
+    <div class="stat"><div class="stat-n">${weeks_done}/${WEEKS.length}</div><div class="stat-l">Weeks complete</div></div>`;
+}
+
+function renderAssistantPanel(){
+  const key=getGeminiKey();
+  const input=document.getElementById('geminiKeyInput');
+  if(input && !input.value && !key && window.GEMINI_API_KEY){
+    input.placeholder='Gemini key is available via window.GEMINI_API_KEY';
+  }
+  setAssistantMeta(key || window.GEMINI_API_KEY ? 'Gemini is enabled for this page session.' : 'Using local planner. Save a key locally or inject window.GEMINI_API_KEY to use Gemini.');
+  renderQuickRoadmapLinks();
+  renderTodayReminders();
+  renderAssistantSuggestions();
+  renderAssistantOutput();
+}
+
+function renderDayTabs(){
+  const dates=getWeekDates(currentWeek);
+  const row=document.getElementById('dayTabs');
+  row.innerHTML='';
+  WEEKS[currentWeek].days.forEach((d,i)=>{
+    const dt=dates[i];
+    const {total,done}=countDay(currentWeek,i);
+    const isDone=done===total&&total>0;
+    const btn=document.createElement('button');
+    btn.className='dtab'+(i===currentDay?' active':'')+(isDone&&i!==currentDay?' done':'');
+    btn.innerHTML=`${DAY_NAMES[i]}<br><span style="font-size:10px;opacity:.75">${dateStr(dt)}</span>${isToday(dt)?'<br><span style="font-size:9px;color:#D4537E">TODAY</span>':''}`;
+    btn.onclick=()=>{ currentDay=i; openSlot=null; renderDayTabs(); renderSchedule(); };
+    row.appendChild(btn);
+  });
+}
+
+function renderSchedule(){
+  const wk=WEEKS[currentWeek];
+  const day=wk.days[currentDay];
+  const dates=getWeekDates(currentWeek);
+  const dt=dates[currentDay];
+
+  document.getElementById('focusBar').textContent=`Week ${currentWeek+1} · ${DAY_FULL[currentDay]} ${dateStr(dt)} — ${day.focus}`;
+
+  const phaseBg=currentWeek<4?'#DBEAFE':currentWeek<7?'#EDE9FE':'#D1FAE5';
+  const phaseFg=currentWeek<4?'#1E3A5F':currentWeek<7?'#3730A3':'#065F46';
+  const pb=document.getElementById('phaseBadge');
+  pb.textContent=wk.phase;
+  pb.style.background=phaseBg; pb.style.color=phaseFg;
+
+  const sch=document.getElementById('schedule');
+  sch.innerHTML='';
+
+  day.slots.forEach((s,si)=>{
+    const c=cats[s.cat]||{color:'#888',text:'#000'};
+    const topicsDone=s.topics.filter((_,ti)=>stored[topicKey(currentWeek,currentDay,si,ti)]).length;
+    const topicsTotal=s.topics.length;
+    const slotDone=topicsDone===topicsTotal;
+    const pct=topicsTotal>0?Math.round(topicsDone/topicsTotal*100):0;
+    const isOpen=openSlot===si;
+
+    const div=document.createElement('div');
+    div.className='slot'+(isOpen?' open':'');
+    div.style.background=c.color+'16';
+    div.style.borderColor=c.color+(slotDone?'':'44');
+    if(slotDone) div.style.borderColor='#1D9E75';
+
+    div.innerHTML=`<div class="slot-header">
+      <span class="time-badge" style="background:${c.color};color:${c.text}">${s.time}</span>
+      <div class="slot-info">
+        <div class="slot-title">${s.title}${slotDone?' <i class="ti ti-circle-check" style="color:#1D9E75;font-size:14px" aria-hidden="true"></i>':''}</div>
+        <div class="slot-sub">${s.sub}</div>
+        <div class="progress-bar-wrap"><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+        <div class="prog-label">${topicsDone}/${topicsTotal} topics</div></div>
+      </div>
+      <div class="slot-right">
+        <div class="chk${slotDone?' done':''}" title="Mark all done" onclick="event.stopPropagation();toggleSlot(${si},${!slotDone})">${slotDone?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
+        <i class="ti ti-chevron-down arrow" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="topics">
+      <div class="topics-grid">${s.topics.map((t,ti)=>{
+        const k=topicKey(currentWeek,currentDay,si,ti);
+        const done=stored[k];
+        return `<span class="ttag${done?' done-tag':''}" onclick="event.stopPropagation();toggleTopic(${si},${ti})">${done?'<i class="ti ti-check" style="font-size:10px;margin-right:3px" aria-hidden="true"></i>':''}${t}</span>`;
+      }).join('')}</div>
+    </div>`;
+
+    div.addEventListener('click',()=>{ openSlot=openSlot===si?null:si; renderSchedule(); });
+    sch.appendChild(div);
+  });
+
+  renderAssistantPanel();
+}
+
+function toggleTopic(si,ti){
+  const k=topicKey(currentWeek,currentDay,si,ti);
+  stored[k]=!stored[k];
+  saveProgress();
+  renderSchedule();
+  renderDayTabs();
+  renderStats();
+}
+
+function toggleSlot(si,val){
+  const s=WEEKS[currentWeek].days[currentDay].slots[si];
+  s.topics.forEach((_,ti)=>{ stored[topicKey(currentWeek,currentDay,si,ti)]=val; });
+  saveProgress();
+  renderSchedule();
+  renderDayTabs();
+  renderStats();
+}
+
+function changeWeek(dir){
+  const nw=currentWeek+dir;
+  if(nw<0||nw>=WEEKS.length) return;
+  currentWeek=nw;
+  currentDay=0;
+  openSlot=null;
+  renderDayTabs();
+  renderSchedule();
+  renderStats();
+  document.getElementById('prevWeek').disabled=currentWeek===0;
+  document.getElementById('nextWeek').disabled=currentWeek===WEEKS.length-1;
+}
+
+function jumpToToday(){
+  const today=new Date();
+  for(let wi=0;wi<WEEKS.length;wi++){
+    const dates=getWeekDates(wi);
+    for(let di=0;di<7;di++){
+      if(isToday(dates[di])){
+        currentWeek=wi; currentDay=di; openSlot=null;
+        renderDayTabs(); renderSchedule(); renderStats();
+        document.getElementById('prevWeek').disabled=currentWeek===0;
+        document.getElementById('nextWeek').disabled=currentWeek===WEEKS.length-1;
+        return;
+      }
+    }
+  }
+}
+
+const todayInRange=()=>{
+  const today=new Date();
+  const end=new Date(START); end.setDate(end.getDate()+WEEKS.length*7);
+  return today>=START&&today<end;
+};
+
+if(todayInRange()) jumpToToday();
+else { currentWeek=0; currentDay=0; }
+
+renderStats();
+renderDayTabs();
+renderSchedule();
+renderAssistantPanel();
+document.getElementById('prevWeek').disabled=currentWeek===0;
+document.getElementById('nextWeek').disabled=currentWeek===WEEKS.length-1;
+</script>
