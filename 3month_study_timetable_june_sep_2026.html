@@ -925,8 +925,21 @@ function formatSlotTime(time){
   return time;
 }
 
-function formatSlotSub(slot){
-  if(slot?.time==='16–19') return `${slot.sub} · 17:30–19 break for game, novel, or other calm activities to keep the mind free and support better mind health`;
+function getMindFreshActivity(date){
+  const activities={
+    0:'go for a calm walk or light stretching',
+    1:'play badminton or do a short outdoor sport',
+    2:'read a novel or a few pages of a book',
+    3:'listen to soft music and journal for a while',
+    4:'do breathing exercises or a short meditation',
+    5:'cycle, sketch, or enjoy a hobby you like',
+    6:'spend screen-free time in nature or at home'
+  };
+  return activities[date?.getDay?.()] || 'choose a calm activity that refreshes your mind';
+}
+
+function formatSlotSub(slot,date){
+  if(slot?.time==='16–19') return `${slot.sub} · 17:30–19 break: ${getMindFreshActivity(date)} so the mind stays free and healthy`;
   return slot?.sub || '';
 }
 
@@ -939,7 +952,8 @@ function getCurrentFocusText(){
 function getTodayPlanLines(){
   const day=getCurrentDayEntry();
   if(!day) return [];
-  return day.slots.map(slot => `${formatSlotTime(slot.time)} ${slot.title} — ${formatSlotSub(slot)}`);
+  const selectedDate=getWeekDates(currentWeek)?.[currentDay] || new Date();
+  return day.slots.map(slot => `${formatSlotTime(slot.time)} ${slot.title} — ${formatSlotSub(slot,selectedDate)}`);
 }
 
 function getRoadmapMatches(text){
@@ -964,10 +978,14 @@ function renderTodayReminders(){
   const target=document.getElementById('todayReminders');
   if(!target) return;
   const day=getCurrentDayEntry();
+  const selectedDate=getWeekDates(currentWeek)?.[currentDay] || new Date();
   const backlog=getBacklogItems(getCurrentDateForSelection());
   const lines=[
     `Wake up at 8:00 AM, then complete the 8–9 AM morning block.`,
     ...(day ? day.slots.slice(0,2).map(slot => `${formatSlotTime(slot.time)} ${slot.title}`) : []),
+    ...(day ? [
+      `Mind-fresh break: 17:30–19 ${getMindFreshActivity(selectedDate)}.`
+    ] : []),
     ...(backlog.length ? [`Catch up on ${backlog.length} overdue block${backlog.length===1?'':'s'} before moving ahead.`] : []),
     ...customReminders.slice(0,4).map(item => item.text)
   ];
@@ -1343,7 +1361,7 @@ function renderSchedule(){
       <span class="time-badge" style="background:${c.color};color:${c.text}">${formatSlotTime(s.time)}</span>
       <div class="slot-info">
         <div class="slot-title">${s.title}${slotDone?' <i class="ti ti-circle-check" style="color:#1D9E75;font-size:14px" aria-hidden="true"></i>':''}</div>
-        <div class="slot-sub">${formatSlotSub(s)}</div>
+        <div class="slot-sub">${formatSlotSub(s,dt)}</div>
         <div class="progress-bar-wrap"><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
         <div class="prog-label">${topicsDone}/${topicsTotal} topics</div></div>
       </div>
