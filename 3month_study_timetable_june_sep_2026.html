@@ -1,6 +1,8 @@
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;}
 .wrap{position:relative;padding:1rem;font-family:var(--font-sans);max-width:1180px;margin:0 auto;isolation:isolate}
 .wrap::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at top left,rgba(83,74,183,.08),transparent 28%),radial-gradient(circle at top right,rgba(29,158,117,.10),transparent 24%),linear-gradient(180deg,rgba(255,255,255,.64),rgba(255,255,255,.88));border:1px solid rgba(148,163,184,.12);border-radius:24px;z-index:-1;box-shadow:0 20px 60px rgba(15,23,42,.08)}
 .topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;padding:12px 14px;border:0.5px solid rgba(148,163,184,.18);border-radius:18px;background:rgba(255,255,255,.75);backdrop-filter:blur(10px)}
@@ -76,15 +78,19 @@
 .calendar-btn:hover{transform:translateY(-1px)}
 .calendar-input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
 .calendar-badge{max-width:220px;padding:8px 10px;border-radius:14px;border:0.5px solid rgba(148,163,184,.18);background:rgba(255,255,255,.96);box-shadow:0 12px 28px rgba(15,23,42,.08);font-size:11px;color:var(--color-text-secondary)}
+.calendar-badge{word-break:break-word;overflow-wrap:break-word}
+.calendar-fab{pointer-events:auto}
 .catchup-banner{margin-bottom:.8rem;padding:10px 12px;border-radius:16px;border:0.5px solid rgba(245,158,11,.25);background:linear-gradient(180deg,rgba(255,251,235,.96),rgba(255,247,237,.96));color:#92400E;box-shadow:0 8px 20px rgba(245,158,11,.08)}
 .catchup-banner strong{font-weight:700;color:#78350F}
 @media (max-width: 720px){
   .wrap{padding:.65rem}
+  .wrap{max-width:100%;margin:0 8px}
   .assistant-grid{grid-template-columns:1fr}
   .topbar,.assistant-panel,.assistant-card{border-radius:16px}
   .stat{min-width:calc(50% - 4px)}
   .calendar-fab{right:10px;top:auto;bottom:12px;transform:none}
-  .calendar-badge{max-width:180px}
+  .calendar-badge{max-width:80vw}
+  .calendar-fab{right:calc(10px + env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom))}
   .nav-row{align-items:stretch}
   .week-label{flex-basis:100%;order:3;text-align:left;padding-top:2px}
   .phase-badge{order:2}
@@ -94,8 +100,12 @@
   .title-area h2{font-size:16px}
   .title-area p{font-size:11px}
   .stat{min-width:100%}
+  .wrap{padding:.5rem}
+  .wrap{margin:0 6px}
+  .slot{word-break:break-word;overflow-wrap:break-word}
+  .slot-title{word-break:break-word}
   .slot-header{align-items:flex-start}
-  .time-badge{min-width:72px}
+  .time-badge{min-width:56px;padding:3px 6px;font-size:10px}
   .assistant-actions,.assistant-key-row{flex-direction:column}
   .assistant-btn,.assistant-key{width:100%}
 }
